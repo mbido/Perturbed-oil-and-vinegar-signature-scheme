@@ -35,16 +35,14 @@ def encode_message(message, field, k):
   vector
     The encoded message as a vector of k elements in the specified field.
   """
-  block_size = len(message) // k
+  block_size = len(message) // k + 1
   split_message = [message[i*block_size:(i+1)*block_size] for i in range(k)]
-  print(split_message)
   return vector([simple_hash(m, field) for m in split_message])
 
 
 if __name__ == "__main__":
-  q = int(2**8)
-  field = GF(3**23, 'a')
+  field = GF(2**8, 'a')
   k = 4
-  message = "Hello world!"
+  message = "Hello, world!"
   print(simple_hash(message, field))
   print(encode_message(message, field, k))

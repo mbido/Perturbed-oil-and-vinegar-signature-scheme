@@ -35,7 +35,7 @@ The `forge.sage` file will contain all the forging methods we will implement.
 To sign a message we will need to encode the message first:
 1) Fix $k$, the number of polynomes in the public key.
 2) Fix $q$, a prime number power to define our field $\mathcal{F}_q$.
-3) Parse the message in $k$ equal parts (the last one can be smaller).
+3) Parse the message in $k$ equal parts (the last one has the remainder).
 4) Hash those blocs with a hash function in $\mathcal{F}_q$ to get the $m_e$.
 
 
