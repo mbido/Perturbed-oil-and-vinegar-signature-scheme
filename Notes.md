@@ -3,21 +3,17 @@
 ## Réunions
 ### Lundi 20 Janvier
 
-Difficultés : 
+Difficultés supposés : 
 - implantation des shémas faciles
 - premières attaques faciles
-- partie 8) potentiellement très dure. 
+- partie $8)$ potentiellement très difficile. 
 
 Réunions :
 - 1h
 - les lundi à 14h
 - 26.00.326
 
-
-
-**Literature** envoyé par mail.
-
-Pour la semaine prochaine :
+**Pour la semaine prochaine :**
 - [ ] lire les papiers :
   - [ ] [Kipnis Shamir](articles/[4]-Kipnis-Shamir-1998.pdf)
   - [ ] [Beullens](articles/Beullens20.pdf)
