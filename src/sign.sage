@@ -38,21 +38,23 @@ def generate_F_matrices(field, k):
 
 
 def generate_public_key(A, F):
-"""
-Generate the public key for the UOV signature scheme.
+  """
+  Generate a public key using the private key A and the vector of random matrices F.
 
-Parameters
-----------
-A : list of numpy.ndarray
-  A list of k matrices, where each matrix is of size (n, n).
-F : list of numpy.ndarray
-  A list of k matrices, where each matrix is of size (n, n).
+  Parameters
+  ----------
+  A : matrix
+    The private key, a k*k invertible random matrix.
+  F : vector of matrices
+    The vector of matrices used to build the public key. Each matrix is of size 2k*2k.
 
-Returns
--------
-numpy.ndarray
-  A vector of k matrices representing the public key.
-"""
+  Returns
+  -------
+  vector of matrices
+    The generated public key, which is a vector of k matrices of size 2k*2k.
+  """
+  return vector([A for _ in F])
+
 
 def sign(M, A, F):
   """
