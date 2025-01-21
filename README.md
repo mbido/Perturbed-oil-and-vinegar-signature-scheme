@@ -25,10 +25,12 @@ physical structure.
 │   │   ├── <test-name>.sage
 │   │   ...
 │   ...
+├── prep_scripts.sh
 ...
 ```
 ### Remarks
 The `forge.sage` file will contain all the forging methods we will implement.
+The `prep_script.sh` converts the .sage modules in basics .py moduls that we can import.
 
 ## Implementation
 ### Encoding a message
