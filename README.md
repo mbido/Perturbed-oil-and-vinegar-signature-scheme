@@ -37,3 +37,34 @@ To sign a message we will need to encode the message first:
 2) Fix $q$, a prime number power to define our field $\mathcal{F}_q$.
 3) Parse the message in $k$ equal parts (the last one can be smaller).
 4) Hash those blocs with a hash function in $\mathcal{F}_q$ to get the $m_e$.
+
+
+## Documentation
+To document our code, we will use the **numpydoc** format.
+Here is an example of such a doc : 
+```py 
+def add(a, b):
+  """
+  Additionne deux nombres.
+
+  Parameters
+  ----------
+  a : int or float
+      Le premier nombre.
+  b : int or float
+      Le deuxième nombre.
+
+  Returns
+  -------
+  int or float
+      La somme de a et b.
+
+  Examples
+  --------
+  >>> add(2, 3)
+  5
+  >>> add(1.5, 2.5)
+  4.0
+  """
+  return a + b
+```
