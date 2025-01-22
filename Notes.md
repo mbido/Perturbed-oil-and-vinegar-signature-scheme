@@ -71,15 +71,15 @@ Let $m_e \in \mathcal{F}_n$.
 
 Then:
 $$\begin{align}
-Y^\top F_e Y = m_e \\
-\Leftrightarrow &\begin{bmatrix} O^\top & V^\top \end{bmatrix} \begin{bmatrix}
+Y^\top F_e Y &= m_e \\
+\Leftrightarrow \begin{bmatrix} O^\top & V^\top \end{bmatrix} \begin{bmatrix}
 0 & B_1 \\ 
 B_2 & B_3 
-\end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} = m_e \\
-\Leftrightarrow &\begin{bmatrix} V^\top B_2 & (O^\top B_1 + V^\top B_3) \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} = m_e \\
-\Leftrightarrow &V^\top B_2 O + (O^\top B_1 + V^\top B_3) V = m_e \\
-\Leftrightarrow &V^\top B_2 O + V^\top B_1^\top O + V^\top B_3V = m_e \\
-\Leftrightarrow &(V^\top B_2 + V^\top B_1^\top) O = m_e - V^\top B_3 V
+\end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
+\Leftrightarrow \begin{bmatrix} V^\top B_2 & (O^\top B_1 + V^\top B_3) \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
+\Leftrightarrow V^\top B_2 O + (O^\top B_1 + V^\top B_3) V &= m_e \\
+\Leftrightarrow V^\top B_2 O + V^\top B_1^\top O + V^\top B_3V &= m_e \\
+\Leftrightarrow (V^\top B_2 + V^\top B_1^\top) O &= m_e - V^\top B_3 V
 \end{align}$$
 
 And so :
