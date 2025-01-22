@@ -59,6 +59,52 @@ $$
 
 If the system has not a unique solutions $\rightarrow$ we generate a new vineger and solve the system. Until we find a system with only one solution.
 
+Let $Y = \begin{bmatrix} O \\ V \end{bmatrix}$ with $O, V \in \mathcal{F}_n^k$.
+
+Let $F_e = 
+\begin{bmatrix}
+0 & B_1 \\ 
+B_2 & B_3 
+\end{bmatrix}$ avec $B_i \in \mathcal{F}_n^{k \times k}$. 
+
+Let $m_e \in \mathcal{F}_n$.
+
+Then:
+$$\begin{align}
+Y^\top F_e Y = m_e \\
+\Leftrightarrow &\begin{bmatrix} O^\top & V^\top \end{bmatrix} \begin{bmatrix}
+0 & B_1 \\ 
+B_2 & B_3 
+\end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} = m_e \\
+\Leftrightarrow &\begin{bmatrix} V^\top B_2 & (O^\top B_1 + V^\top B_3) \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} = m_e \\
+\Leftrightarrow &V^\top B_2 O + (O^\top B_1 + V^\top B_3) V = m_e \\
+\Leftrightarrow &V^\top B_2 O + V^\top B_1^\top O + V^\top B_3V = m_e \\
+\Leftrightarrow &(V^\top B_2 + V^\top B_1^\top) O = m_e - V^\top B_3 V
+\end{align}$$
+
+And so :
+
+$$\begin{align}
+\begin{cases}
+Y^\top F_1 Y = m_1 \\
+\vdots \\
+Y^\top F_k Y = m_k
+\end{cases} \\
+\Leftrightarrow\begin{bmatrix}
+V^\top B_{1, 2} + V^\top B_{1, 3}^\top \\
+\vdots \\
+V^\top B_{k, 2} + V^\top B_{k, 3}^\top
+\end{bmatrix}
+O = \begin{bmatrix}
+m_1 - V^\top B_{1, 3}V\\
+\vdots \\
+m_k - V^\top B_{k, 3}V
+\end{bmatrix}
+\end{align}
+$$
+
+This is a simple $Ax = b$ system to solve !
+
 We can now get our signature $X$ defined as follow : 
 
 $$X := A^{-1}Y$$
