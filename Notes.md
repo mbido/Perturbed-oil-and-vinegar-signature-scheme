@@ -70,21 +70,21 @@ B_2 & B_3
 Let $m_e \in \mathcal{F}_n$.
 
 Then:
-$$\begin{align}
-Y^\top F_e Y &= m_e \\
-\Leftrightarrow \begin{bmatrix} O^\top & V^\top \end{bmatrix} \begin{bmatrix}
+$$\begin{aligned}
+&&Y^\top F_e Y &= m_e \\
+&\Leftrightarrow &\begin{bmatrix} O^\top & V^\top \end{bmatrix} \begin{bmatrix}
 0 & B_1 \\ 
 B_2 & B_3 
 \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
-\Leftrightarrow \begin{bmatrix} V^\top B_2 & (O^\top B_1 + V^\top B_3) \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
-\Leftrightarrow V^\top B_2 O + (O^\top B_1 + V^\top B_3) V &= m_e \\
-\Leftrightarrow V^\top B_2 O + V^\top B_1^\top O + V^\top B_3V &= m_e \\
-\Leftrightarrow (V^\top B_2 + V^\top B_1^\top) O &= m_e - V^\top B_3 V
-\end{align}$$
+&\Leftrightarrow &\begin{bmatrix} V^\top B_2 & (O^\top B_1 + V^\top B_3) \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
+&\Leftrightarrow &V^\top B_2 O + (O^\top B_1 + V^\top B_3) V &= m_e \\
+&\Leftrightarrow &V^\top B_2 O + V^\top B_1^\top O + V^\top B_3V &= m_e \\
+&\Leftrightarrow &(V^\top B_2 + V^\top B_1^\top) O &= m_e - V^\top B_3 V
+\end{aligned}$$
 
 And so :
 
-$$\begin{align}
+$$\begin{aligned}
 \begin{cases}
 Y^\top F_1 Y = m_1 \\
 \vdots \\
@@ -100,7 +100,7 @@ m_1 - V^\top B_{1, 3}V\\
 \vdots \\
 m_k - V^\top B_{k, 3}V
 \end{bmatrix}
-\end{align}
+\end{aligned}
 $$
 
 This is a simple $Ax = b$ system to solve !
