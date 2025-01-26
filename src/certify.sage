@@ -1,8 +1,5 @@
 import utils
 
-def fake_encode(k):
-    return [0] * k
-
 def certify(public_key,message,signature):
     """
     Check whether a given message and signature are valid
