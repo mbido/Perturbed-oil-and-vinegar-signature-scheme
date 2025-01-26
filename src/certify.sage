@@ -25,10 +25,8 @@ def certify(public_key,message,signature):
     ring = public_key[0].base_ring()
     for matrix in public_key:
         if matrix.nrows() != 2*k or matrix.ncols() != 2*k or matrix.base_ring() != ring:
-            print(1)
             return False
     if signature.nrows() != 2*k or signature.ncols() != 1 or signature.base_ring() != ring:
-        print(2)
         return False
     
     message_vector = utils.encode_message(message, ring, k) # ... size k
@@ -36,7 +34,6 @@ def certify(public_key,message,signature):
     #verify
     for i in range(k):
         if (signature.transpose() * public_key[i] * signature != message_vector[i,0]):
-            print(3)
             return False
     return True
 
