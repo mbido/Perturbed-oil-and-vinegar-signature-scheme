@@ -1,3 +1,4 @@
+import sign
 import utils
 
 def certify(public_key,message,signature):
@@ -16,33 +17,34 @@ def certify(public_key,message,signature):
     """
     k = len(public_key)
     # basic checks
-    if len(signature) != k:
-        return False
-    if k == 0:
-        return True
     ring = public_key[0].base_ring()
     for matrix in public_key:
         if matrix.nrows() != 2*k or matrix.ncols() != 2*k or matrix.base_ring() != ring:
+            print(1)
             return False
     if signature.nrows() != 2*k or signature.ncols() != 1 or signature.base_ring() != ring:
+        print(2)
         return False
     
-    message_vector = utils.encode_message(message, ring, 2*k) # ... size 2k
+    message_vector = utils.encode_message(message, ring, k) # ... size k
     
     #verify
     for i in range(k):
-        G_i = public_key[i]
-        if (signature.transpose() * G_i * signature != message_vector):
+        if (signature.transpose() * public_key[i] * signature != message_vector[i,0]):
+            print(3)
             return False
     return True
 
 if __name__ == "__main__":
-    q = 2
+    #testing code only
+    q = 3
     k = 4
-    '''public_key = [block_diagonal_matrix(zero_matrix(GF(q),k),identity_matrix(GF(q),k)] * k
+    '''public_key = [block_matrix([[zero_matrix(GF(q),k),identity_matrix(GF(q),k)],[identity_matrix(GF(q),k),zero_matrix(GF(q),k)]],subdivide=False)] * k
     message = "hello"
+    print(public_key)
     #text to vector
     #message_vector = fake_encode(k) # ... size 2k
-    signature = fake_encode(k)
+    signature = matrix(GF(3),[[1],[2],[0],[1],[2],[0],[1],[2]])
+    print(signature.transpose() * public_key[0] * signature)
     
-    print(public_key,message,signature)'''
+    print(certify(public_key,message,signature))'''
