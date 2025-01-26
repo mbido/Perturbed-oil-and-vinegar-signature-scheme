@@ -14,6 +14,11 @@ def certify(public_key,message,signature):
       The message to check
     signature : (2k x 1)-matrix
       The signature to check
+    
+    Returns
+    -------
+    boolean
+      Whether this is a valid signature for the message given the public key
     """
     k = len(public_key)
     # basic checks
