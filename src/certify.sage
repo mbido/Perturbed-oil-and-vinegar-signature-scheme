@@ -1,4 +1,4 @@
-import sign
+load("sign.sage")
 import utils
 
 def certify(public_key,message,signature):
