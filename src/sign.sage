@@ -71,7 +71,7 @@ def generate_public_key(A, F):
 
 
 
-def create_system(M, A, F, V):
+def create_system(M, A, F, V, field):
   """
   Create the linear system for the UOV scheme.
 
@@ -94,6 +94,7 @@ def create_system(M, A, F, V):
     A k-dimensional vector (right-hand side) for the system.
   """
   k = len(V)
+  #field = A.base_ring()
   r = [0] * k                     # right part of the system for later
   L = [[0] * k for _ in range(k)] # left part of the system for later
   
@@ -113,7 +114,7 @@ def create_system(M, A, F, V):
   return matrix(field, L), vector(field, r)
 
 
-def sign(message, A, F):
+def sign(message, A, F, field, k):
   """
   Sign a message using the private key A, the vector of random matrices F
   and the OV scheme. All of that in a field \mathcal{F}_q.
@@ -133,14 +134,16 @@ def sign(message, A, F):
     The signature for the message being a sage vector
 
   """
+  # field = A.base_ring()
+  # k = A.ncols()
   M = utils.encode_message(message, field, k)
   V = random_vector(field, k)  # Vinegar variables (fixed)
   
   # Regenerate L and r until L is invertible
-  L, r = create_system(M, A, F, V)
+  L, r = create_system(M, A, F, V, field)
   while not L.is_invertible():
     V = random_vector(field, k)
-    L, r = create_system(M, A, F, V)
+    L, r = create_system(M, A, F, V, field)
 
   O = L.solve_right(r)  # Solve for oil variables
   Y = vector(field, list(O) + list(V))  # Concatenate O and V (order corrected)
@@ -148,13 +151,3 @@ def sign(message, A, F):
 
 counter = 0
 
-if __name__ == "__main__":
-  print("testing")
-  field = GF(7, 'a')
-  k = 4
-  F = generate_F_matrices(field, k)
-  A = generate_private_key(field, k)
-  G = generate_public_key(A, F)
-  message = "Hello, world!"
-  X = sign(message, A, F)
-  print(X)
