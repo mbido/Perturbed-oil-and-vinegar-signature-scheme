@@ -12,7 +12,7 @@ def certify(public_key,message,signature):
       The public key 
     message : String
       The message to check
-    signature : (2k x 1)-matrix
+    vector : 2k-vector
       The signature to check
     
     Returns
@@ -26,14 +26,14 @@ def certify(public_key,message,signature):
     for matrix in public_key:
         if matrix.nrows() != 2*k or matrix.ncols() != 2*k or matrix.base_ring() != ring:
             return False
-    if signature.nrows() != 2*k or signature.ncols() != 1 or signature.base_ring() != ring:
+    if signature.length() != 2*k or signature.base_ring() != ring:
         return False
     
     message_vector = utils.encode_message(message, ring, k) # ... size k
     
     #verify
     for i in range(k):
-        if (signature.transpose() * public_key[i] * signature != message_vector[i,0]):
+        if (signature * public_key[i] * signature != message_vector[i,0]):
             return False
     return True
 
