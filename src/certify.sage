@@ -1,5 +1,5 @@
 load("sign.sage")
-import utils
+load("utils.sage")
 
 def certify(public_key,message,signature):
     """
@@ -29,7 +29,7 @@ def certify(public_key,message,signature):
     if signature.length() != 2*k or signature.base_ring() != ring:
         return False
     
-    message_vector = utils.encode_message(message, ring, k) # ... size k
+    message_vector = encode_message(message, ring, k) # ... size k
     
     #verify
     for i in range(k):
@@ -37,10 +37,10 @@ def certify(public_key,message,signature):
             return False
     return True
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     #testing code only
-    q = 3
-    k = 4
+    #q = 3
+    #k = 4
     '''public_key = [block_matrix([[zero_matrix(GF(q),k),identity_matrix(GF(q),k)],[identity_matrix(GF(q),k),zero_matrix(GF(q),k)]],subdivide=False)] * k
     message = "hello"
     print(public_key)

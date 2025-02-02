@@ -38,11 +38,3 @@ def encode_message(message, field, k):
   block_size = len(message) // k + 1
   split_message = [message[i*block_size:(i+1)*block_size] for i in range(k)]
   return vector([simple_hash(m, field) for m in split_message])
-
-
-if __name__ == "__main__":
-  field = GF(2**8, 'a')
-  k = 4
-  message = "Hello, world!"
-  print(simple_hash(message, field))
-  print(encode_message(message, field, k))

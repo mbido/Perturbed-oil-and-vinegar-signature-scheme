@@ -1,4 +1,4 @@
-import utils
+load("utils.sage")
 
 def generate_private_key(field, k):
   """
@@ -134,9 +134,7 @@ def sign(message, A, F, field, k):
     The signature for the message being a sage vector
 
   """
-  # field = A.base_ring()
-  # k = A.ncols()
-  M = utils.encode_message(message, field, k)
+  M = encode_message(message, field, k)
   V = random_vector(field, k)  # Vinegar variables (fixed)
   
   # Regenerate L and r until L is invertible
@@ -148,6 +146,4 @@ def sign(message, A, F, field, k):
   O = L.solve_right(r)  # Solve for oil variables
   Y = vector(field, list(O) + list(V))  # Concatenate O and V (order corrected)
   return A.inverse() * Y  # Compute signature using inverse, not transpose
-
-counter = 0
 

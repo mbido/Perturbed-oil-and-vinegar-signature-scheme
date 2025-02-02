@@ -1,10 +1,11 @@
-# from certify import *
 load("sign.sage")
+load("utils.sage")
+load("certify.sage")
 
 def verif(public_key, message, signature):
   field  = public_key[0].base_ring()
   k = len(public_key)
-  message_vector = utils.encode_message(message, field, k)
+  message_vector = encode_message(message, field, k)
   for i in range(k):
       if (signature * public_key[i] * signature != message_vector[i]):
         return False
@@ -23,5 +24,3 @@ if __name__ == "__main__":
   valid = verif(G,message,X_vec)
   print(X)
   print(valid)
-
-  
