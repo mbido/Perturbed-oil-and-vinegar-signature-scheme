@@ -71,7 +71,7 @@ def generate_public_key(A, F):
 
 
 
-def create_system(M, A, F, V, field):
+def create_system(M, A, F, V):
   """
   Create the linear system for the UOV scheme.
 
@@ -94,7 +94,7 @@ def create_system(M, A, F, V, field):
     A k-dimensional vector (right-hand side) for the system.
   """
   k = len(V)
-  #field = A.base_ring()
+  field = A.base_ring()
   r = [0] * k                     # right part of the system for later
   L = [[0] * k for _ in range(k)] # left part of the system for later
   
@@ -141,10 +141,10 @@ def sign(message, A, F):
   V = random_vector(field, k)  # Vinegar variables (fixed)
   
   # Regenerate L and r until L is invertible
-  L, r = create_system(M, A, F, V, field)
+  L, r = create_system(M, A, F, V)
   while not L.is_invertible():
     V = random_vector(field, k)
-    L, r = create_system(M, A, F, V, field)
+    L, r = create_system(M, A, F, V)
 
   O = L.solve_right(r)  # Solve for oil variables
   Y = vector(field, list(O) + list(V))  # Concatenate O and V
