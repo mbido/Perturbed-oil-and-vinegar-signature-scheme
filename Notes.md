@@ -15,7 +15,7 @@ Réunions :
 
 ### Lundi 27 Janvier
 - mqchallenge.org
-- préparer démo propre avec option de verbose
+- préparer démo propre avec option de verbose -> OK
 - commencer les attaques (comment les décomposers)
 - comment évaluer la sécurité d'un algo
 
