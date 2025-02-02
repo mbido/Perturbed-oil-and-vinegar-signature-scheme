@@ -3,7 +3,7 @@ load("utils.sage")
 load("certify.sage")
 
 if __name__ == "__main__":
-  # setting up the environnement 
+  # setting up the environment 
   field = GF(7, 'a')
   k = 4
 
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
   # Messages
   message1 = "First message to sign"
-  message2 = "Seconde message to sign"
+  message2 = "Second message to sign"
 
   # Alice signing the messages
   A_signed_1 = sign(message1, A_private, A_f, 0)
@@ -57,3 +57,33 @@ if __name__ == "__main__":
   print(certify(A_public, message2, B_signed_2))
   print(certify(B_public, message1, A_signed_1))
   print(certify(B_public, message2, A_signed_2, 2))
+  
+  ## Invalid signatures -> inconsistent length
+  print("======= Inconsistent length =======")
+  print(certify(A_public[:-1], message1, A_signed_1,2))
+  print(certify(A_public+[A_public[0]], message1, A_signed_1,2))
+  
+  # Setting up different fields
+  other_field = GF(5, 'a')
+  
+  # Charlie's keys
+  C_f = generate_F_matrices(other_field, k, 0)
+  C_private = generate_private_key(other_field, k, 0)
+  C_public = generate_public_key(C_private, C_f, 0)
+  
+  # Charlie signing the messages
+  C_signed_1 = sign(message1, C_private, C_f, 0)
+  C_signed_2 = sign(message2, C_private, C_f, 0)
+  
+  #More validations
+  ## Valid signatures
+  print("======== Valid signatures ========")
+  print(certify(C_public, message1, C_signed_1))
+  print(certify(C_public, message2, C_signed_2))
+  
+  ## Invalid 
+  print("======= Inconsistent base field =======")
+  print(certify(C_public, message1, A_signed_1))
+  print(certify(A_public, message1, C_signed_1))
+  print(certify(C_public, message2, A_signed_2,2))
+  print(certify(A_public, message2, C_signed_2,2))

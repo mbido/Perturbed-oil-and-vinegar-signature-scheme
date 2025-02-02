@@ -25,7 +25,7 @@ def generate_private_key(field, k, verbose=0):
 
     if verbose > 1:
       print(A)
-      print("This matrix is not inveresible.")
+      print("This matrix is not invertible.")
 
     A = random_matrix(field, 2*k)
 

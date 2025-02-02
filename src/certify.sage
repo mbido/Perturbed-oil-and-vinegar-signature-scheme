@@ -25,10 +25,33 @@ def certify(public_key,message,signature, verbose=0):
     k = len(public_key)
     # basic checks
     ring = public_key[0].base_ring()
-    for matrix in public_key:
-        if matrix.nrows() != 2*k or matrix.ncols() != 2*k or matrix.base_ring() != ring:
+    for i in range(len(public_key)):
+        matrix = public_key[i]
+        if matrix.nrows() != 2*k or matrix.ncols() != 2*k:
+            if verbose > 0:
+                print('key list has length',k)
+                print('key',i,'is of size',matrix.nrows(),'x',matrix.nrows(),'not',2*k,'x',2*k)
+                print(matrix)
+                print()
             return False
-    if signature.length() != 2*k or signature.base_ring() != ring:
+        if matrix.base_ring() != ring:
+            if verbose > 0:
+                print('key',i,'has base ring',matrix.base_ring(),'instead of',ring)
+                print('key 0 (',ring,'):')
+                print(public_key[0])
+                print('key',i,'(',matrix.base_ring(),'):')
+            return False
+    if signature.length() != 2*k:
+        if verbose > 0:
+            print('signature is of size',signature.length(),'instead of',2*k)
+            print('signature:')
+            print(signature)
+        return False
+    if signature.base_ring() != ring:
+        if verbose > 0:
+            print('signature has base ring',signature.base_ring(),'instead of',ring)
+            print('signature:')
+            print(signature)
         return False
     
     message_vector = encode_message(message, ring, k) # ... size k
