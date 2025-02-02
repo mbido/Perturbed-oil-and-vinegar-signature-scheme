@@ -1,3 +1,4 @@
 *.py
 *temp*
 _*/
+.DS_Store

@@ -13,6 +13,12 @@ Réunions :
 - les lundi à 14h
 - 26.00.326
 
+### Lundi 27 Janvier
+- mqchallenge.org
+- préparer démo propre avec option de verbose
+- commencer les attaques (comment les décomposers)
+- comment évaluer la sécurité d'un algo
+
 **Pour la semaine prochaine :**
 - [ ] lire les papiers :
   - [ ] [Kipnis Shamir](articles/[4]-Kipnis-Shamir-1998.pdf)
