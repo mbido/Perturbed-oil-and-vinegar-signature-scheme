@@ -19,14 +19,6 @@ Réunions :
 - commencer les attaques (comment les décomposers)
 - comment évaluer la sécurité d'un algo
 
-**Pour la semaine prochaine :**
-- [ ] lire les papiers :
-  - [ ] [Kipnis Shamir](articles/[4]-Kipnis-Shamir-1998.pdf)
-  - [ ] [Beullens](articles/Beullens20.pdf)
-- [ ] Faire l'implementation en sagemath
-  - [ ] Implémenter les schémas
-  - [ ] Casser les schémas (si possible)
-  - [ ] Mesures des perfs du cassage (si vraiment on est chaud)
 
 ## Signature Oil & vineger (OV)
 
