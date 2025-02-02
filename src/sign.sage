@@ -1,6 +1,6 @@
 load("utils.sage")
 
-def generate_private_key(field, k):
+def generate_private_key(field, k, verbose=0):
   """
   Generate a private key for the given field.
 
@@ -21,7 +21,7 @@ def generate_private_key(field, k):
     A = random_matrix(field, 2*k)
   return A
 
-def generate_F_matrices(field, k):
+def generate_F_matrices(field, k, verbose=0):
   """
   Generate the list of random matrices F for the given field.
 
@@ -48,7 +48,7 @@ def generate_F_matrices(field, k):
   return F
 
 
-def generate_public_key(A, F):
+def generate_public_key(A, F, verbose=0):
   """
   Generate a public key using the private key A and the list of random matrices F.
 
@@ -71,7 +71,7 @@ def generate_public_key(A, F):
 
 
 
-def create_system(M, A, F, V):
+def create_system(M, A, F, V, verbose=0):
   """
   Create the linear system for the UOV scheme.
 
@@ -114,7 +114,7 @@ def create_system(M, A, F, V):
   return matrix(field, L), vector(field, r)
 
 
-def sign(message, A, F):
+def sign(message, A, F, verbose=0):
   """
   Sign a message using the private key A, the vector of random matrices F
   and the OV scheme. All of that in a field \mathcal{F}_q.

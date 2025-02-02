@@ -1,7 +1,7 @@
 load("sign.sage")
 load("utils.sage")
 
-def certify(public_key,message,signature):
+def certify(public_key,message,signature, verbose=0):
     """
     Check whether a given message and signature are valid
     for a corresponding public key.

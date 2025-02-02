@@ -7,12 +7,12 @@ if __name__ == "__main__":
   field = GF(7, 'a')
   k = 4
 
-  # Alice Keys
+  # Alice's Keys
   A_f = generate_F_matrices(field, k)
   A_private = generate_private_key(field, k)
   A_public = generate_public_key(A_private, A_f)
 
-  # Bob Keys
+  # Bob's Keys
   B_f = generate_F_matrices(field, k)
   B_private = generate_private_key(field, k)
   B_public = generate_public_key(B_private, B_f)
@@ -46,6 +46,13 @@ if __name__ == "__main__":
 
   ## Invalid signatures -> wrong signature tested
   print("======== Wrong signature tested ========")
+  print(certify(A_public, message1, A_signed_2))
+  print(certify(A_public, message2, A_signed_1))
+  print(certify(B_public, message1, B_signed_2))
+  print(certify(B_public, message2, B_signed_1))
+
+  ## Invalid signatures -> wrong person tested
+  print("======== Wrong person tested ========")
   print(certify(A_public, message1, B_signed_1))
   print(certify(A_public, message2, B_signed_2))
   print(certify(B_public, message1, A_signed_1))
