@@ -8,9 +8,9 @@ if __name__ == "__main__":
   k = 4
 
   # Alice's Keys
-  A_f = generate_F_matrices(field, k)
-  A_private = generate_private_key(field, k)
-  A_public = generate_public_key(A_private, A_f)
+  A_f = generate_F_matrices(field, k, 0)
+  A_private = generate_private_key(field, k, 0)
+  A_public = generate_public_key(A_private, A_f, 0)
 
   # Bob's Keys
   B_f = generate_F_matrices(field, k)
@@ -22,7 +22,7 @@ if __name__ == "__main__":
   message2 = "Seconde message to sign"
 
   # Alice signing the messages
-  A_signed_1 = sign(message1, A_private, A_f)
+  A_signed_1 = sign(message1, A_private, A_f, 0)
   A_signed_2 = sign(message2, A_private, A_f)
 
   # Bob signing the messages
@@ -56,4 +56,4 @@ if __name__ == "__main__":
   print(certify(A_public, message1, B_signed_1))
   print(certify(A_public, message2, B_signed_2))
   print(certify(B_public, message1, A_signed_1))
-  print(certify(B_public, message2, A_signed_2))
+  print(certify(B_public, message2, A_signed_2, 2))

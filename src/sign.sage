@@ -16,9 +16,23 @@ def generate_private_key(field, k, verbose=0):
   matrix
     The generated private key for the specified field.
   """
+  if verbose > 0:
+        print(f"\n=======\nBegin generate_private_key() with verbose = {verbose}\n=======\n")
+
+
   A = random_matrix(field, 2*k)
   while not A.is_invertible(): # we loop very rarely
+
+    if verbose > 1:
+      print(A)
+      print("This matrix is not inveresible.")
+
     A = random_matrix(field, 2*k)
+
+  if verbose > 0:
+    print("A : ")
+    print(A)
+
   return A
 
 def generate_F_matrices(field, k, verbose=0):
@@ -40,11 +54,28 @@ def generate_F_matrices(field, k, verbose=0):
     F_e = [0 , B1]
           [B2, B3]
   """
+  if verbose > 0:
+        print(f"\n=======\nBegin generate_F_matrices() with verbose = {verbose}\n=======\n")
   F = []
   for _ in range(k):
     F_e = random_matrix(field, 2*k)
+    
+    if verbose > 1:
+      print("F_e Before:")
+      print(F_e)
+
     F_e[:k, :k] = matrix(field, k)
+
+    if verbose > 1:
+      print("F_e After:")
+      print(f"{F_e}\n")
+
     F.append(F_e)
+    
+
+  if verbose > 0:
+    print("F : ")
+    [print(f"{F_e}\n") for F_e in F]
   return F
 
 
@@ -64,9 +95,20 @@ def generate_public_key(A, F, verbose=0):
   list of matrices
     The generated public key, which is a list of k matrices of size 2k*2k.
   """
+  if verbose > 0:
+        print(f"\n=======\nBegin generate_public_key() with verbose = {verbose}\n=======\n")
   G = []
   for i, F_e in enumerate(F):
+    if verbose > 1:
+      G_e = A.transpose() * F_e * A
+      print(f"{A}\n\t*\n{F_e}\n\t*\n{A}\n\t=\n{G_e}\n\n")
+
     G.append(A.transpose() * F_e * A)
+  
+  if verbose > 0:
+    print("G : ")
+    [print(f"{G_e}\n") for G_e in G]
+
   return G
 
 
@@ -93,6 +135,8 @@ def create_system(M, A, F, V, verbose=0):
   r : vector
     A k-dimensional vector (right-hand side) for the system.
   """
+  if verbose > 0:
+        print(f"\n=======\nBegin create_system() with verbose = {verbose}\n=======\n")
   k = len(V)
   field = A.base_ring()
   r = [0] * k                     # right part of the system for later
@@ -134,10 +178,16 @@ def sign(message, A, F, verbose=0):
     The signature for the message being a sage vector
 
   """
+  if verbose > 0:
+        print(f"\n=======\nBegin sign() with verbose = {verbose}\n=======\n")
   k = len(F)
   field = A.base_ring()
 
   M = encode_message(message, field, k)
+
+  if verbose > 0:
+    print(f"M : {M}")
+
   V = random_vector(field, k)  # Vinegar variables (fixed)
   
   # Regenerate L and r until L is invertible
@@ -147,6 +197,25 @@ def sign(message, A, F, verbose=0):
     L, r = create_system(M, A, F, V)
 
   O = L.solve_right(r)  # Solve for oil variables
+
+  if verbose > 2:
+    print("L*O = r :")
+    print(L)
+    print("*")
+    print(tuple([f"O{i}" for i in range(k)]))
+    print("=")
+    print(r)
+    print()
+
   Y = vector(field, list(O) + list(V))  # Concatenate O and V
-  return vector(A.inverse() * Y) 
+
+  if verbose > 1:
+    print(f"Y : {Y}")
+
+  X = vector(A.inverse() * Y) 
+
+  if verbose > 0:
+    print(f"X : {X}")
+
+  return X
 
