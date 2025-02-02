@@ -33,20 +33,6 @@ def certify(public_key,message,signature):
     
     #verify
     for i in range(k):
-        if (signature * public_key[i] * signature != message_vector[i,0]):
+        if (signature * public_key[i] * signature != message_vector[i]):
             return False
     return True
-
-#if __name__ == "__main__":
-    #testing code only
-    #q = 3
-    #k = 4
-    '''public_key = [block_matrix([[zero_matrix(GF(q),k),identity_matrix(GF(q),k)],[identity_matrix(GF(q),k),zero_matrix(GF(q),k)]],subdivide=False)] * k
-    message = "hello"
-    print(public_key)
-    #text to vector
-    #message_vector = fake_encode(k) # ... size 2k
-    signature = matrix(GF(3),[[1],[2],[0],[1],[2],[0],[1],[2]])
-    print(signature.transpose() * public_key[0] * signature)
-    
-    print(certify(public_key,message,signature))'''

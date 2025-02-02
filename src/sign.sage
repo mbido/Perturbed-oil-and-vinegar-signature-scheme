@@ -114,7 +114,7 @@ def create_system(M, A, F, V, field):
   return matrix(field, L), vector(field, r)
 
 
-def sign(message, A, F, field, k):
+def sign(message, A, F):
   """
   Sign a message using the private key A, the vector of random matrices F
   and the OV scheme. All of that in a field \mathcal{F}_q.
@@ -134,6 +134,9 @@ def sign(message, A, F, field, k):
     The signature for the message being a sage vector
 
   """
+  k = len(F)
+  field = A.base_ring()
+
   M = encode_message(message, field, k)
   V = random_vector(field, k)  # Vinegar variables (fixed)
   
@@ -144,6 +147,6 @@ def sign(message, A, F, field, k):
     L, r = create_system(M, A, F, V, field)
 
   O = L.solve_right(r)  # Solve for oil variables
-  Y = vector(field, list(O) + list(V))  # Concatenate O and V (order corrected)
-  return A.inverse() * Y  # Compute signature using inverse, not transpose
+  Y = vector(field, list(O) + list(V))  # Concatenate O and V
+  return vector(A.inverse() * Y) 
 

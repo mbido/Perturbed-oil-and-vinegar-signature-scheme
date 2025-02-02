@@ -2,25 +2,51 @@ load("sign.sage")
 load("utils.sage")
 load("certify.sage")
 
-def verif(public_key, message, signature):
-  field  = public_key[0].base_ring()
-  k = len(public_key)
-  message_vector = encode_message(message, field, k)
-  for i in range(k):
-      if (signature * public_key[i] * signature != message_vector[i]):
-        return False
-  return True
-
-
 if __name__ == "__main__":
+  # setting up the environnement 
   field = GF(7, 'a')
   k = 4
-  F = generate_F_matrices(field, k)
-  A = generate_private_key(field, k)
-  G = generate_public_key(A, F)
-  message = "Hello, world!"
-  X = sign(message, A, F, field, k)
-  X_vec = vector(field, X)
-  valid = verif(G,message,X_vec)
-  print(X)
-  print(valid)
+
+  # Alice Keys
+  A_f = generate_F_matrices(field, k)
+  A_private = generate_private_key(field, k)
+  A_public = generate_public_key(A_private, A_f)
+
+  # Bob Keys
+  B_f = generate_F_matrices(field, k)
+  B_private = generate_private_key(field, k)
+  B_public = generate_public_key(B_private, B_f)
+
+  # Messages
+  message1 = "First message to sign"
+  message2 = "Seconde message to sign"
+
+  # Alice signing the messages
+  A_signed_1 = sign(message1, A_private, A_f)
+  A_signed_2 = sign(message2, A_private, A_f)
+
+  # Bob signing the messages
+  B_signed_1 = sign(message1, B_private, B_f)
+  B_signed_2 = sign(message2, B_private, B_f)
+
+  # Validations 
+  ## Valid signatures
+  print("======== Valid signatures ========")
+  print(certify(A_public, message1, A_signed_1))
+  print(certify(A_public, message2, A_signed_2))
+  print(certify(B_public, message1, B_signed_1))
+  print(certify(B_public, message2, B_signed_2))
+
+  ## Invalid signatures -> wrong message tested
+  print("======== Wrong message tested ========")
+  print(certify(A_public, message2, A_signed_1))
+  print(certify(A_public, message1, A_signed_2))
+  print(certify(B_public, message2, B_signed_1))
+  print(certify(B_public, message1, B_signed_2))
+
+  ## Invalid signatures -> wrong signature tested
+  print("======== Wrong signature tested ========")
+  print(certify(A_public, message1, B_signed_1))
+  print(certify(A_public, message2, B_signed_2))
+  print(certify(B_public, message1, A_signed_1))
+  print(certify(B_public, message2, A_signed_2))
