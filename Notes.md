@@ -177,7 +177,7 @@ We can construct higher degree polynomials by multiplying $(x-\lambda)$ for each
 
 If $M$ has no eigenvalues?
 
-If p is the characteristic polynomial, then $\dim \ker(p(M)) = n$
+If p is the minimal polynomial (or a product, such as the characteristic polynomial), then $\dim \ker(p(M)) = n$
 
 
 

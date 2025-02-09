@@ -1,6 +1,7 @@
 load("sign.sage")
 load("utils.sage")
 load("certify.sage")
+load("forge.sage")
 
 if __name__ == "__main__":
   # setting up the environment 
@@ -87,3 +88,5 @@ if __name__ == "__main__":
   print(certify(A_public, message1, C_signed_1))
   print(certify(C_public, message2, A_signed_2,2))
   print(certify(A_public, message2, C_signed_2,2))
+  
+  forge_key(A_public)
