@@ -156,3 +156,20 @@ We can now get our signature $X$ defined as follow :
 $$X := A^{-1}Y$$
 
 
+Polynomial $p$ of degree $d$, matrice $M \in F_q^{n\times n}$
+
+Values of dim ker(p(M)) ?
+
+$\dim(\ker(p(M))) + \dim(\im (p(M))) = \rank(p(M)) = n$
+
+If $p$ is the zero-polynomial, then $\dim \ker(p(M)) = \dim \ker(0) = n$
+
+If p is otherwise constant, then $\dim \ker(p(M)) = \dim \ker(M) = n - \rank(M)$
+
+If p is the characteristic polynomial, then $\dim \ker(p(M)) = n$
+
+
+
+Unique monic annihilating polynomial
+
+Consider a polynomial p of minimal degree such that p(M) = 0. We may force this to be monic by multiplying by the inverse of its most significant coefficient. We show this is unique: assume a and b are two distinct monic polynomials of degree d such that a(M) = 0 = b(M). Then a-b has degree at most d-1 and (a-b)(M) = a(M) - b(M) = 0. This is a contradiction, so there is a unique minimal polynomial p that is monic and such that p(M)=0.
