@@ -164,7 +164,18 @@ $\dim(\ker(p(M))) + \dim(\im (p(M))) = \rank(p(M)) = n$
 
 If $p$ is the zero-polynomial, then $\dim \ker(p(M)) = \dim \ker(0) = n$
 
-If p is otherwise constant, then $\dim \ker(p(M)) = \dim \ker(M) = n - \rank(M)$
+In all other cases, we can look at only monic polynomials, as we are working over a field.
+
+If $p$ is otherwise constant, then $\dim \ker(p(M)) = \dim \ker(Id) = 0$
+
+If $p$ is linear, then $\dim \ker (p(M)) = \dim \ker(M) = n - \rank(M)$
+
+If $p$ is affine, $p(M) = M + p_0 Id$. For any eigenvalue $\lambda$ of $M$, we can set $p_0 = -\lambda$, and then any associated eigenvector will map to $0$.
+So $\dim \ker(p(M))$ can be the dimension of an eigenspace.
+
+We can construct higher degree polynomials by multiplying $(x-\lambda)$ for each eigenvalue of $M$.
+
+If $M$ has no eigenvalues?
 
 If p is the characteristic polynomial, then $\dim \ker(p(M)) = n$
 
