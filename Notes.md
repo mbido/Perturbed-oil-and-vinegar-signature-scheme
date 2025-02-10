@@ -67,6 +67,12 @@ Réunions :
     *   Les formes quadratiques $G_e$, lorsqu'elles sont exprimées dans la base adaptée à l'espace huile, deviennent linéaires dans les variables correspondant à la base de l'espace huile.
     *   Utiliser cette linéarité pour forger des signatures ou retrouver la clé secrète.
 
+#### TODO
+- regarder algo 2
+    - plus concis dans Beullens
+- pour P deg d -> quel est la dim du noyaux de p(M)
+- implementer au fur et a mesure d'implementer des expériences
+- 
 
 ## Signature Oil & vineger (OV)
 
