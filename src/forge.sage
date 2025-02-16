@@ -3,33 +3,38 @@ load("sign.sage")
 load("utils.sage")
 
 def forge_key(public_key):
-    
-    invertible_pub = list(filter(lambda M: M.is_invertible(),public_key))
-    # loop until good candidate found
+    invertible_pub = list(filter(lambda M: (M+M.transpose()).is_invertible(),public_key))
     candidate = None
-    timeout = 100
     while candidate is None:
-        # select a random G_i^-1 G_j
         i = random.randrange(len(invertible_pub))
         j = random.randrange(len(invertible_pub))
-        candidate = invertible_pub[i].inverse() * invertible_pub[j]
+        G_i = invertible_pub[i] + invertible_pub[i].transpose()
+        G_j = invertible_pub[j] + invertible_pub[j].transpose()
+        candidate = G_i.inverse() * G_j
         charpoly = candidate.charpoly()
         factors = charpoly.factor()
-        if len(factors) != 2 or factors[0][1] != 1 or factors[1][1] != 1:
-            #print(factors)
+        sqrt = 1
+        for f in factors:
+            sqrt *= f[0]^(f[1]//2)
+        ker = sqrt(candidate).kernel()
+        if (ker.dimension() * 2 != G_i.nrows()):
             candidate = None
-            timeout -= 1
-            if (timeout <= 0):
-                return
-            continue
-    print(candidate)
-    print(candidate.charpoly())
-    print(candidate.charpoly().factor())
-    factors = candidate.charpoly().factor()
-    poly1 = factors[0][0]
-    poly2 = factors[1][0]
-    print(poly1(candidate).kernel())
-    print(poly2(candidate).kernel())
+    print(ker)
+    fake_A = complete_basis(ker)
+    fake_F = [fake_A.inverse().transpose()*G*fake_A.inverse() for G in public_key]
+    return fake_A,fake_F
+
+def forge_signature(message,public_key):
+    A,F = forge_key(public_key)
+    s = sign(message,A,F)
+    print(s)
+    print(certify(public_key,message,s))
+
+def complete_basis(partial):
+    bm = partial.basis_matrix()
+    complement = bm.right_kernel().basis()
+    complete = complement + bm.rows()
+    return Matrix(complete)
     
 
 def forge_sign(public_key,message):
