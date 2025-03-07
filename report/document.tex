@@ -1,0 +1,80 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{lipsum} % Pour ajouter du texte dans l'exemple
+\usepackage{fancyhdr} % Pour personnaliser les en-têtes et pieds de page
+
+% \hypersetup{
+	%     colorlinks=true,
+	%     linkcolor=blue,
+	%     filecolor=magenta,      
+	%     urlcolor=cyan,
+	%     citecolor=blue,
+	% }
+
+% header & footer
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\textit{MODEL -- Projet d'implémentation}}
+\fancyhead[R]{\thepage}
+
+\begin{document}
+	
+	
+	\begin{titlepage}
+		\centering
+		{\Huge\textbf{CCA Project -- Unbalanced Oil and Vinegar Signature Schemas}\par}
+		\vspace{0.5cm}
+		{\Large Nicholas Bell and Matthieu Bidault\par}
+		\vspace{0.5cm}
+		{\Large supervised by Pierre Pébereau\par}
+		\vfill
+		\textit{2024-2025}
+		\vspace*{\fill}
+	\end{titlepage}
+	
+	\setcounter{tocdepth}{3}
+	\tableofcontents
+	\thispagestyle{fancy}
+	\newpage
+	
+	\section{Oil and Vinegar Signatures}
+	
+	\subsection{Schema Description}
+	
+	We begin by briefly presenting Kipnis and Shamir's variant of the Oil and Vinegar signature schema. Let $(m_1,\dots,m_k) \in \mathbb{F}_q$ be our message.
+	
+	\subsubsection{Key Generation}
+	
+	Our private key $A$ is a randomly chosen invertible matrix in $\mathbb{F}_q^{2k\times2k}$.
+	
+	For our public key we first generate $k$ random matrices $F_1,\dots,F_k \in \mathbb{F}_q^{2k\times2k}$, such that the upper-left quadrant of each $F_i$ is zero, i.e. $F_i = \begin{bmatrix}
+	0 & B_1\\
+	B_2 & B_3
+	\end{bmatrix}$ for $B_i \in \mathbb{F}_q^{k\times k}$. Our public key is $G_1,\dots,G_k$, with $G_i := A^TF_iA$.
+	
+	\subsubsection{Signature}
+	
+	
+	
+	\subsubsection{Verification}
+	
+	A signature $\mathbf{x} = (x_1,\dots,x_{2k})$ is valid if for all $i$, $x_i^TG_ix_i$
+	
+	\subsection{Implementation}
+	
+	
+	
+	\section{An Improved Attack}
+	
+	\subsection{}
+		
+\end{document}
