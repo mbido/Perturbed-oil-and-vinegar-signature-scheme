@@ -2,3 +2,5 @@
 *temp*
 _*/
 .DS_Store
+report/*.gz
+report/*.pdf
