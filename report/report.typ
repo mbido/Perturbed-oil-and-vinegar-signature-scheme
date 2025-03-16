@@ -58,8 +58,9 @@
 // ---
 
 // --- small modifs
-#set enum(numbering: "a.")
+#set enum(numbering: "1.")
 #set heading(numbering: "I.1.a -")
+#set math.equation(numbering: "(1)")
 // ---
 
 // -----------------------------------------------
@@ -90,7 +91,7 @@
 // -------------- Table of contents --------------
 
 #pagebreak()
-#outline(title:"Contents")
+#outline(title:"Contents", depth:3)
 #pagebreak()
 
 
@@ -134,7 +135,7 @@ $
     dots.v,
     G_k (x_1, dots, x_(2k)) = m_k
   )
-$
+$ <signature-def>
 
 for $m_1 m_2 dots m_k := M$.
 
@@ -194,7 +195,7 @@ $
 X^top G_i X = m_i
 $ 
 
-recall previews equations :
+recall @signature-def:
 $
   cases(
     G_1 (x_1, dots, x_(2k)) = m_1,
@@ -208,6 +209,7 @@ $
 == Proof of Correctness
 
 === Verification
+// Est-ce qu'on mettrais pas tout dans la partie verification de Shema description ?
 Given a message $M in FF_q^k$ and a potential signature $X in FF_q^(2k)$, let us take a fixed $i in [|1; n|]$
 
 Suppose that $X$ is indeed a signature of $M$. We have : 
@@ -223,8 +225,16 @@ Therefore, ($X$ is a signature of $M) => X^top G_i X = m_i, forall i in [|1; n|]
 The other way around is implied by the definition of what a signature is. Therefore : 
 $ (X #text("is a signature of") M) <=> X^top G_i X = m_i, forall i in [|1; n|] $ 
 
+== Attack on OV
+
 == Implementation
 	
-// 	sait khi ?
-	
-= An Improved Attack
+for the implementation, we used sagemath for its simplicity and how powerfull it is.
+
+=== Complexities and sizes
++ *Key Generation*
++ *Signing a message*
++ *Verification*
++ *Forging a signature*
+
+= VOX signature scheme
