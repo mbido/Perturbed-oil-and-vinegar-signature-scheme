@@ -96,6 +96,10 @@
 
 // ----------------- Begin document --------------
 
+= Notations and context
+
+We work in a finite fiels $FF_q$ with $q$ elements and we deal with the ring of polynomials in $n$ variables $x_1, dots, x_n$ over $FF_q$.
+
 = Oil and Vinegar Signatures
 	
 == Schema Description
@@ -132,11 +136,11 @@ $
   )
 $
 
-for $m_1||m_2||dots||m_k = M$.
+for $m_1 m_2 dots m_k := M$.
 
-To achive this, we first create $Y = (y_1, dots, y_(2k)) in FF_n^(2k)$. Let us call the first half $(y_1, dots, y_k)$ the *oil* part and the second half $(y_(k+1), dots, y_(2k))$ the *vinegar* part.
+To achive this, we first create $Y = (y_1, dots, y_(2k)) in FF_n^(2k)$ a vector of $2k$ elements. Let us call the first half of that vector $(y_1, dots, y_k)$ the *oil* part and the second half $(y_(k+1), dots, y_(2k))$ the *vinegar* part.
 
-The *vinegar* is randomly generated. To get the *oil* part, we need to solve the folowing system of equations :
+To create this Y, the *vinegar* is randomly generated. To get the *oil* part, we need to solve the following system of equations :
 $
   cases(
     Y^top F_1 Y = m_1,
@@ -145,9 +149,9 @@ $
   )
 $
 
-If the system has more than one solution, we generate a new *vinegar* and than solve the system again or generate again. This thanksfully happens rarely. 
+If the system has more than one solution, we generate a new *vinegar* and than solve the system again until we have a non singular system to solve. Having multiple solutions thanksfully happens rarely. 
 
-For that system to be solved, we can first rewrite it another way :
+For that system to be solved, we can first rewrite it :
 
 We write $Y = mat(O, V)$ with $O, V in FF_n^k$. Let us take an $F_i$ and an $m_i$, we have :
 $
@@ -180,14 +184,14 @@ This is a simple $A x = b$ system to solve.
 	
 Now that we have our $Y$ generated, we can obtain a signature $X$ for $M$ as :
 $
-  X := A^(-1) Y
+  X := A^(-1) Y in FF_q^(2k)
 $
 
 === Verification
 	
-A signature $X = (x_1,dots,x_{2k})$ is valid if for all $i$, 
+A signature $X = (x_1,dots,x_(2k))$ is valid if for all $i$, 
 $
-x_i^top G_i x_i = m_i
+X^top G_i X = m_i
 $ 
 
 recall previews equations :
@@ -202,9 +206,23 @@ $
 
 	
 == Proof of Correctness
-	
-// 	salle u
-	
+
+=== Verification
+Given a message $M in FF_q^k$ and a potential signature $X in FF_q^(2k)$, let us take a fixed $i in [|1; n|]$
+
+Suppose that $X$ is indeed a signature of $M$. We have : 
+$
+  X^top G_i X &= X^top (A^top F_i A) X\
+              &= (A^(-1) Y)^top A^top F_i A A^(-1) Y\
+              &= Y^top (A^(-1))^top A^top F_i Y\
+              &= Y^top F_i Y = m_i
+$
+
+Therefore, ($X$ is a signature of $M) => X^top G_i X = m_i, forall i in [|1; n|]$ 
+
+The other way around is implied by the definition of what a signature is. Therefore : 
+$ (X #text("is a signature of") M) <=> X^top G_i X = m_i, forall i in [|1; n|] $ 
+
 == Implementation
 	
 // 	sait khi ?
