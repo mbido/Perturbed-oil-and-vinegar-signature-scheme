@@ -264,7 +264,7 @@ mat(
 $
 ]
 
-$overline(F_(i,j))$ is now introduce as following :
+$overline(F_(i,j))$ is now introduce as follow :
 $
 overline(F_(i, j)) = (F_i^*)^(-1) F_j^*
 $<def-F-bar>
