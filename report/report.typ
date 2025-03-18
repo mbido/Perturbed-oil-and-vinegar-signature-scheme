@@ -1,10 +1,13 @@
 // ------------------- Preamble -------------------
 
 // --- Theorems
-#import "@preview/theoretic:0.2.0" as theoretic: theorem, proof, qed
-#show ref: theoretic.show-ref
-#let corollary = theorem.with(kind: "corollary", supplement: "Corollary")
-#let example = theorem.with(kind: "example", supplement: "Example", number: none)
+// #import "@preview/theoretic:0.2.0" as theoretic: theorem, proof, qed
+// #show ref: theoretic.show-ref
+// #let corollary = theorem.with(kind: "corollary", supplement: "Corollary")
+// #let lemme = theorem.with(kind: "lemme", supplement: "Lemme")
+// #let example = theorem.with(kind: "example", supplement: "Example", number: none)
+// 
+// 
 // ---
 
 // --- Code snippets
@@ -12,6 +15,25 @@
 // #import "@preview/codly-languages:0.1.1": *
 // #show: codly-init.with()
 // ---
+
+#import "@preview/ctheorems:1.1.3": *
+#show: thmrules.with(qed-symbol: $square$)
+
+// #set page(width: 16cm, height: auto, margin: 1.5cm)
+// #set heading(numbering: "a.a")
+
+#let theorem = thmbox("theorem", "Theorem", base_level: 0)
+#let lemme = thmbox("lemme", "Lemme", base_level: 0)
+#let corollary = thmplain(
+  "corollary",
+  "Corollary",
+  base: "theorem",
+  titlefmt: strong
+)
+#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
+
+#let example = thmplain("example", "Example").with(numbering: none)
+#let proof = thmproof("proof", "Proof", base_level:0, base: "heading")
 
 // --- Getting something that looks like LateX
 #set page(margin: 1.75in, numbering: "1")
@@ -68,12 +90,13 @@
 #set math.equation(numbering: "(1)")
 // ---
 
+
 // -----------------------------------------------
 
 // ----------------- Title page ------------------
 
 #align(center + horizon)[
-  #large[*Unbalanced Oil and Vinegar Signature Schemas*]
+  #large[*Perturbed Oil and Vinegar Signature Schemes*]
 
   #big[Master's project - CCA]
   
@@ -102,7 +125,7 @@
 // ----------------- Begin document --------------
 
 = Notations and context
-We work in a finite field $FF_q$ with $q$ elements and we deal with the ring of polynomials in $n$ variables $x_1, dots, x_n$ over $FF_q$.
+Consider a finite field $FF_q$ with $q$ elements and dealing with the ring of polynomials in $n$ variables $x_1, dots, x_n$ over $FF_q$.
 
 = Oil and Vinegar Signatures
 	
@@ -112,25 +135,25 @@ We begin by briefly presenting Kipnis and Shamir's variant of the Oil and Vinega
 	
 === Key Generation
 	
-Our *private key* $A$ is a randomly chosen invertible matrix in $FF_q^(2k times 2k)$.
-	
-For our public key we first generate $k$ random matrices $F_1, dots, F_k in FF_q^(2k times 2k)$, such that the upper-left quadrant of each $F_i$ is zero, i.e.
+The *private key* $A$ is a randomly chosen invertible matrix in $FF_q^(2k times 2k)$.
+
+For the public key, $k$ random matrices $F_1, dots, F_k in FF_q^(2k times 2k)$ are first generated, such that the upper-left quadrant of each $F_i$ is zero, i.e.
 
 $
 F_i = mat(
   0   , B_1;
   B_2 , B_3
-) text(", for ") B_i in FF_q^(k times k) 
+) quad text(", for ") B_i in FF_q^(k times k) 
 $ <def-F>
 
-Our *public key* is $G_1, dots, G_k$, with 
+The *public key* is $G_1, dots, G_k$, with 
 $
 G_i := A^T F_i A
 $
 	
 === Signature
 	
-Given a message $M in FF_q^k$, we want to create a *signature* $X = (x_1, dots, x_(2k)) in  FF_n^(2k)$, i.e.
+Given a message $M in FF_q^k$, a *signature* is an $X = (x_1, dots, x_(2k)) in  FF_n^(2k)$, such that :
 $
   cases(
     G_1 (x_1, dots, x_(2k)) = m_1,
@@ -142,9 +165,9 @@ $ <signature-def>
 
 for $m_1 m_2 dots m_k := M$.
 
-To achieve this, we first create $Y = (y_1, dots, y_(2k)) in FF_n^(2k)$ a vector of $2k$ elements. Let us call the first half of that vector $(y_1, dots, y_k)$ the *oil* part and the second half $(y_(k+1), dots, y_(2k))$ the *vinegar* part.
+To achieve this, a vector of $2k$ elements $Y = (y_1, dots, y_(2k)) in FF_n^(2k)$ is created. The first half of that vector $(y_1, dots, y_k)$ is the *oil* part and the second half $(y_(k+1), dots, y_(2k))$ the *vinegar* part.
 
-To create this Y, the *vinegar* is randomly generated. To get the *oil* part, we need to solve the following system of equations :
+To create this Y, the *vinegar* is randomly generated. The *oil* part is generated using the following system of equations :
 $
   cases(
     Y^top F_1 Y = m_1,
@@ -153,11 +176,11 @@ $
   )
 $
 
-If the system has more than one solution, we generate a new *vinegar* and than solve the system again until we have a non singular system to solve. Having multiple solutions thankfully happens rarely. 
+If the system has more than one solution, a new *vinegar* must be generated again until the system to solve is non singular. Having multiple solutions happens rarely.
 
-For that system to be solved, we can first rewrite it :
+For that system to be solved, it can be rewriten to a simpler form:
 
-We write $Y = mat(O, V)$ with $O, V in FF_n^k$. Let us take an $F_i$ and an $m_i$, we have :
+Knowing $Y$ has two parts it can be considered as $Y = mat(O, V)$ with $O, V in FF_n^k$. Let $F_i$ one of the generated matrix in _[@def-F]_ and an $m_i in FF_q$, a bloc of the message. One can write :
 $
   &&Y^top F_i Y                                           &= m_i\
   &<=> &mat(O, V) mat(0, B_1 ; B_2, B_3) mat(O ; V)       &= m_i\
@@ -184,18 +207,19 @@ $
   )
 $
 
-This is a simple $A x = b$ system to solve.
+This is a linear $A x = b$ system to solve.
 	
-Now that we have our $Y$ generated, we can obtain a signature $X$ for $M$ as :
+Now that $Y$ is generated, a signature $X$ for $M$ can be generated as :
 $
   X := A^(-1) Y in FF_q^(2k)
-$
+$ <signature-equation>
 
 === Verification
 
-Given a message $M in FF_q^k$ and a potential signature $X in FF_q^(2k)$, let us take a fixed $i in [|1; n|]$
+#lemme[If a vector $X in FF_n^(2k)$ is a signature created with _[@signature-equation]_, then the _[@signature-def]_ is verified.]
 
-Suppose that $X$ is indeed a signature of $M$. We have : 
+#proof[
+Given a message $M in FF_q^k$, a signature to this message $X in FF_q^(2k)$ created with _[@signature-equation]_ and a fixed $i in [|1; k|]$. One can verify that : 
 $
   X^top G_i X &= X^top (A^top F_i A) X\
               &= (A^(-1) Y)^top A^top F_i A A^(-1) Y\
@@ -203,21 +227,19 @@ $
               &= Y^top F_i Y = m_i
 $
 
-Therefore, ($X$ is a signature of $M) => X^top G_i X = m_i, forall i in [|1; n|]$ 
-
-The other way around is implied by the definition of what a signature is. Therefore : 
-$ (X #text("is a signature of") M) <=> X^top G_i X = m_i, forall i in [|1; n|] $ 
+Therefore, ($X$ is a signature of $M) => X^top G_i X = m_i, forall i in [|1; k|]$. This is what _[@signature-def]_  says.
+]
 
 == Attack on OV
 
-We base our attack on the one described by Kipnis & Shamir in the original paper. *ADD REF*.
+This attack is based on the one described by Kipnis & Shamir in the original paper. *ADD REF*.
 
-We start by considering that we have access to the $F$ matrices used in the key generation, similarly to Kipnis & Shamir. We exclude non-invertible matrices, which be increasingly rare as the size of our base field and $k$ grow.
+One can consider that there is access to the $F$ matrices used in the key generation, similarly to Kipnis & Shamir. This is possible as it will be shown later that those matrices are not used to implement the attack. Non-invertible matrices are excluded, which be increasingly rare as the size of our base field and $k$ grow.
 
-While the original paper considers raw matrices $F_i$, we will instead focus on the modified forms given as follows.
+While the original paper considers raw matrices $F_i$, this attack will instead focus on the modified forms given as follows.
 
 
-With our previous $F$ (see @def-F), we denote $F^*$ as:
+With the previous $F$ (see _[@def-F]_), $F^*$ is defined as:
 $
 F^* = F + F^T &= mat(
   0, B_1 + B_2^top;
@@ -230,21 +252,38 @@ F^* = F + F^T &= mat(
 $<def-F-star>
 With $C_i in FF_q^k$ being just a notation. 
 
-We notice similarly to the $F$ matrices used by Kipnis and Shamir, that if $F^*$ is invertible (which is probable), then it maps the oil subspace of $Y$ to the vinegar subspace of $Y$.
-
+#lemme[
+Similarly to the $F$ matrices used by Kipnis and Shamir, it can be notice that if $F^*$ is invertible (which is probable), then it maps the oil subspace of $Y$ to the vinegar subspace of $Y$.
+]
+#proof[
 $
 mat(
     0, C_1;
     C_1^top, C_3
   )mat(X; 0) = mat(0; C_1^T X)
-  $
+$
+]
 
-We continue by denoting $overline(F_(i,j))$ the following, which has the important property of being an automorphism on the oil subspace of $Y$:
+$overline(F_(i,j))$ is now introduce as following :
 $
 overline(F_(i, j)) = (F_i^*)^(-1) F_j^*
 $<def-F-bar>
 
-We now examine the form of the inverse of $F^*$.
+#lemme[
+  $overline(F_(i,j))$ is an automorphism on the oil subspace of $Y$.
+]
+
+#lemme[
+The inverse of $F^*$ has the form :
+$
+(F^*)^(-1) = mat(
+    D_1, (C_1^top)^(-1);
+    C_1^(-1), 0
+  )
+$
+]
+#proof[
+One can examine the form of the inverse of $F^*$ as follows.
 
 $
 mat(0, C_1; C_1^T, C_3) mat(D_1 D_2; D_3 D_4) = mat(I, 0; 0, I)\
@@ -259,9 +298,23 @@ $
     C_1^(-1), 0
   )
 $
-With $D_1 in FF_q^k$ being just a matrix that we wont compute. 
 
-We can compute that $overline(F_(i,j))$ :
+With $D_1 in FF_q^k$ being just a matrix that wont be compute.
+]
+
+#lemme[
+$overline(F_(i,j))$ has the form : 
+$
+mat(
+  hat(A), hat(B);
+  0, hat(D)
+  )
+$
+With $hat(A), hat(B), hat(C) in FF_q^k$.
+]
+#proof[
+
+As before, one can examine the form of $overline(F_(i,j))$ :
 $
 overline(F_(i, j)) = (F_i^*)^(-1) F_j^* 
 
@@ -285,10 +338,17 @@ overline(F_(i, j)) = (F_i^*)^(-1) F_j^*
 $ <compute-F-bar>
 
 With again new notations with $hat(A), hat(B), hat(C) in FF_q^k$.
+]
 
-We will show that the characteristic polynomial of $overline(F_(i, j))$ is a square, this will help us later.
+#lemme[
+The characteristic polynomial of $overline(F_(i, j))$ is a perfect square.
+]<lemme-poly-char-square>
 
-We have : 
+
+
+// We will show that the characteristic polynomial of $overline(F_(i, j))$ is a square, this will help us later.
+#proof[
+By definition of the characteristic polynomial: 
 $
 chi_F (X) = det(overline(F_(i, j)) - I_(2k))
 $
@@ -300,13 +360,13 @@ overline(F_(i, j)) - I_(2k) = mat(
 )
 $
 
-The determinant of a upper triangular matrix by block is the product of the determinants of its diagonal blocks. Therefore :
+The determinant of an upper triangular matrix by block is the product of the determinants of its diagonal blocks. Therefore :
 $
 chi_F (X) =& det(hat(A) - X I_k) dot det(hat(D) - X I_k)\
           =& chi_hat(A) (X) dot chi_hat(D) (X)
 $
 
-And we know that $hat(A)$ and $hat(D)$ are linked :
+And it is known that $hat(A)$ and $hat(D)$ are linked :
 $
 &hat(A) = (C_1^top)^(-1) B_1^top &<=>& B_1^top = C_1^top hat(A)\
 &hat(D) = C_1^(-1) B_1 &<=>& B_1^top = hat(D)^top C_1^top\
@@ -321,16 +381,26 @@ $
 chi_F (X) =& chi_hat(A) (X) dot chi_hat(D) (X) \
           =& [chi_hat(A) (X)]^2
 $
+]
 
-This result demonstrates that the characteristic polynomial of $overline(F_(i, j))$ is a perfect square. This is a crucial property that allows us to identify the oil subspace. Specifically, if we can find a matrix whose characteristic polynomial factors into two distinct irreducible polynomials of degree $k$, then the kernels of these polynomial factors (evaluated at the matrix) will correspond to the oil and vinegar subspaces. This follows from Theorem [*REF TO KIPNIS SHAMIR*] concerning eigenspaces and characteristic polynomials. In practice, we may encounter characteristic polynomials that are not perfect squares due to numerical approximations or slight variations in the scheme. However, we expect them to be close to a perfect square, allowing us to identify a polynomial of degree $k$ whose kernel has dimension $k$.
+This is property allows to identify the oil subspace. Specifically, if one can find a matrix whose characteristic polynomial factors into two distinct irreducible polynomials of degree $k$, then the kernels of these polynomial factors (evaluated at the matrix) will correspond to the oil subspace. This follows from Theorem [*REF TO KIPNIS SHAMIR*] concerning eigenspaces and characteristic polynomials. Allowing to identify a polynomial of degree $k$ whose kernel has dimension $k$.
 
-We will now utilise the *public* matrices $G_i$ for the practical attack.  Recall that $G_i = A^T F_i A$.  Our goal is to find a linear transformation that effectively "undoes" the mixing introduced by the secret matrix $A$, allowing us to separate the oil and vinegar variables.
+The *public* matrices $G_i$ will be now utilised for the practical attack.  Recall that $G_i = A^top F_i A$, the goal is to find a linear transformation that effectively "undoes" the mixing introduced by the secret matrix $A$, allowing to separate the oil and vinegar variables.
 
-We cannot directly compute the $overline(F_(i,j))$ matrices, as they depend on the secret $F_i$. However, we can construct matrices from the public key that have a similar relationship to the oil subspace.  We define:
+The $overline(F_(i,j))$ matrices cannot be directly computed, as they depend on the secret $F_i$. However, matrices from the public key that have a similar relationship to the oil subspace can be constructed. 
 
+In that extend $G_(i,j)$ is defined as follow :
 $ G_(i,j) := (G_i + G_i^T)^(-1) (G_j + G_j^T) $
 
-Substituting $G_i = A^T F_i A$, we get:
+#lemme[
+  $G_(i,j)$ is similar to $overline(F_(i,j))$
+]
+
+#proof[
+By definition :
+$ G_(i,j) := (G_i + G_i^T)^(-1) (G_j + G_j^T) $
+
+Substituting $G_i = A^T F_i A$ :
 
 $ G_(i,j) &= (A^T F_i A + A^T F_i^T A)^(-1) (A^T F_j A + A^T F_j^T A) \
           &= (A^T (F_i + F_i^T) A)^(-1) (A^T (F_j + F_j^T) A) \
@@ -339,31 +409,31 @@ $ G_(i,j) &= (A^T F_i A + A^T F_i^T A)^(-1) (A^T F_j A + A^T F_j^T A) \
           &= A^(-1) (F_i^*)^(-1) F_j^* A \
           &= A^(-1) overline(F_(i,j)) A $
 
-This crucial result shows that $G_(i,j)$ is *similar* to $overline(F_(i,j))$.  Similar matrices have the same characteristic polynomial, and their eigenspaces are related by the similarity transformation (in this case, $A$).  Therefore, finding the eigenspaces of $G_(i,j)$ will allow us to recover the oil subspace, up to the unknown transformation $A$.
+Therefore, $G_(i,j)$ is similar to $overline(F_(i,j))$.
+]
 
-To find the oil subspace, we employ the characteristic polynomial method.  The process is as follows:
+Similar matrices have the same characteristic polynomial, and their eigenspaces are related by the similarity transformation (in this case, $A$).  Therefore, finding the eigenspaces of $G_(i,j)$ will allow to recover the oil subspace, up to the unknown transformation $A$.
+
+The process of finding the oil subspace using the characteristic polynomial method is as follows :
 
 +  #underline[Construct  $G_(i,j)$ Matrices:]
-  We begin by selecting pairs of indices $(i, j) in [|1; k|]^2$.  For each pair, we compute  $G_(i,j) = (G_i + G_i^top)^(-1) (G_j + G_j^top)$, using the publicly available  $G_i$ matrices.  We filter out any  $G_i$ for which  $(G_i + G_i^top)$ is not invertible.  In practice, we expect a significant proportion of the  $G_i$ to satisfy this invertibility condition.
+  Pairs of indices $(i, j) in [|1; k|]^2$ are first selected. For each pair, $G_(i,j) = (G_i + G_i^top)^(-1) (G_j + G_j^top)$ is computed using the publicly available $G_i$ matrices. Any $G_i$ for which $(G_i + G_i^top)$ is not invertible is filtered out. In practice, a significant proportion of the $G_i$ is expected to satisfy this invertibility condition.
 
-+  #underline[Compute Characteristic Polynomial:]  For each constructed  $G_(i,j)$ matrix, we compute its characteristic polynomial, denoted as  $chi_(G_(i,j)) (X)$.  Since  $G_(i,j)$ is similar to  $overline(F_(i,j))$,  $chi_(G_(i,j)) (X)$ is identical to  $chi_F (X)$, which we have shown to be (ideally) a perfect square of a polynomial of degree  $k$.
++  #underline[Characteristic Polynomial Computation:]  For each constructed  $G_(i,j)$ matrix, its characteristic polynomial, denoted as  $chi_(G_(i,j)) (X)$, is computed.  Since  $G_(i,j)$ is similar to  $overline(F_(i,j))$,  $chi_(G_(i,j)) (X)$ is identical to  $chi_F (X)$, which has been shown to be a perfect square of a polynomial of degree  $k$.
 
-+  #underline[Factor and Extract "Square Root":] We factor the characteristic polynomial  $chi_(G_(i,j))(x)$. Due to numerical imprecision or slight variations, we might not get a perfect square. However, we will look for two factors that is the result of rounding errors, having two similar polynomials. In the ideal case, we have  $chi_(G_(i,j)) (X) = [P(X)]^2$, where  $P(x)$ is a polynomial of degree  $k$.  We extract this  $P(X)$ polynomial.  If the factorization yields multiple factors, we select the factor (or product of factors) that results in a polynomial of degree  $k$.
++  #underline[Factor and Extract "Square Root":] The characteristic polynomial $chi_(G_(i,j))(x)$ is factored. It is known that $chi_(G_(i,j)) (X) = [P(X)]^2$, where $P(x)$ is a polynomial of degree $k$. The $P(X)$ polynomial is then extracted. If multiple factors are obtained in the factorization, the factor that results in a polynomial of degree $k$ is selected.
 
-+  #underline[Compute Kernel:] We now evaluate the polynomial  $P(X)$ at the matrix  $G_(i,j)$, obtaining  $P(G_(i,j))$. The kernel of this matrix,  $ker(P(G_(i,j)))$, is our target.  By the theory of eigenspaces and characteristic polynomials [*REF KIPNIS SHAMIR*], this kernel will be either the oil subspace or the vinegar subspace (both of dimension  $k$).
++  #underline[Compute Kernel:] The polynomial  $P(X)$ is then evaluated at the matrix  $G_(i,j)$, resulting in  $P(G_(i,j))$. The kernel of this matrix,  $ker(P(G_(i,j)))$, is computed. By the theory of eigenspaces and characteristic polynomials [*REF KIPNIS SHAMIR*], this kernel will be either the oil subspace (of dimension  $k$).
 
-+  #underline[Iterate and Verify:]  We repeat steps 1-4 with different pairs of indices  $(i, j)$ until we find a  $G_(i,j)$ matrix that yields a kernel of dimension  $k$.  The dimension of the kernel is easily checked.  Once a kernel of the correct dimension is found, we have successfully identified (up to the transformation  $A$) either the oil or vinegar subspace.  Since the oil and vinegar subspaces are complements of each other, finding one effectively reveals the other.
++  #underline[Iterate and Verify:]  Steps 1-4 are repeated with different pairs of indices $(i, j)$ until a $G_(i,j)$ matrix that yields a kernel of dimension $k$ is found. The dimension of the kernel can be easily checked. Once a kernel of the correct dimension has been found, the oil subspace will have been successfully identified (up to the transformation $A$). Since the oil and vinegar subspaces are complements of each other, when the oil is found, the vinegar is effectively revealed.
 
-+ #underline[Construct Forged Key] Once the kernel is found, its basis matrix (transposed) serves as our fake $A$. This matrix allows to create valid signatures.
++ #underline[Construct Forged Key] Once the kernel is found, its basis matrix (transposed) serves as a fake $A$. This matrix allows to create valid signatures.
 
-
-
-Once we have identified the oil subspace (represented by the kernel of  $P(G_(i,j))$), we have effectively broken the security of the scheme. The kernel's basis vectors form the columns of a matrix that we can use as a substitute for the secret key  $A$  in the signing process. Let  $K$  be the matrix whose columns are the basis vectors of the recovered kernel.  We can then use  $K$  to generate valid signatures for arbitrary messages, following the same procedure as the legitimate signer (but using  $K$  instead of  $A$). The resulting signatures will be valid because the signing algorithm depends only on the *relationship* between the oil and vinegar variables, which is preserved by our transformation  $K$
+Once the oil subspace (represented by the kernel of $P(G_(i,j))$) has been identified, the security of the scheme can be considered broken. The kernel's basis vectors can be arranged into columns of a matrix that can be used as a substitute for the secret key $A$ in the signing process. Let $K$ be the matrix whose columns are formed by the basis vectors of the recovered kernel. Valid signatures for arbitrary messages can then be generated using $K$, following the same procedure as the legitimate signer (but with $K$ used instead of $A$). The signatures generated in this way will be valid because the signing algorithm depends only on the relationship between the oil and vinegar variables, which is preserved by the transformation $K$
 
 == Implementation
 	
-For the implementation, we used sagemath for its simplicity and how powerful it is.
-
+The implementation as been done using sagemath.
 
 === Complexities and sizes
 + *Key Generation*
@@ -374,7 +444,7 @@ For the implementation, we used sagemath for its simplicity and how powerful it 
   
   The private key is primarily the $2k times 2k$ matrix $A$.  This matrix holds $(2k)^2 = 4k^2$ elements.  Thus, the private key's size is $O(k^2)$ elements. The $F_i$ matrices are not strictly part of the secret key since they are derivable with $A$.
 
-  #underline[Time Complexity of Key Generation] // Useful ?? not sure
+  #underline[Time Complexity of Key Generation]
   
 + *Signing a message*
 + *Verification*
