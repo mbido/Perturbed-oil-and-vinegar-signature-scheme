@@ -1,10 +1,9 @@
-// ------------------- Preamble -------------------
-
 // --- Theorems
 // #import "@preview/theoretic:0.2.0" as theoretic: theorem, proof, qed
 // #show ref: theoretic.show-ref
 // #let corollary = theorem.with(kind: "corollary", supplement: "Corollary")
-// #let lemme = theorem.with(kind: "lemme", supplement: "Lemme")
+// #let lemma = theorem.with(kind: "lemma", supplement: "Lemma")
+// #let proposition = theorem.with(kind: "proposition", supplement: "Proposition")
 // #let example = theorem.with(kind: "example", supplement: "Example", number: none)
 // 
 // 
@@ -23,14 +22,15 @@
 // #set heading(numbering: "a.a")
 
 #let theorem = thmbox("theorem", "Theorem", base_level: 0)
-#let lemme = thmbox("lemme", "Lemme", base_level: 0)
+#let lemma = thmbox("lemma", "Lemma", base_level: 0)
+#let proposition = thmbox("proposition", "Proposition", base_level: 0)
 #let corollary = thmplain(
   "corollary",
   "Corollary",
   base: "theorem",
   titlefmt: strong
 )
-#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
+#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em), base_level: 0)
 
 #let example = thmplain("example", "Example").with(numbering: none)
 #let proof = thmproof("proof", "Proof", base_level:0, base: "heading")
@@ -88,6 +88,27 @@
 #set enum(numbering: "1.")
 #set heading(numbering: "I.1.a -")
 #set math.equation(numbering: "(1)")
+
+
+#show ref: this => {
+  let content = this
+  let color = green
+  if this.element != none { // not a ref to biblio
+    content = "[" + content + "]"
+    color = red
+  }
+  underline()[_#text(color)[#content]_]
+}
+
+#show link: it => {
+  if type(it.dest) != label { // not an internal link
+    set text(fill: blue)
+    it
+  } else {
+    it
+  }
+}
+
 // ---
 
 
@@ -124,20 +145,23 @@
 
 // ----------------- Begin document --------------
 
-= Notations and context
-Consider a finite field $FF_q$ with $q$ elements and dealing with the ring of polynomials in $n$ variables $x_1, dots, x_n$ over $FF_q$.
+= Notation and context
+All signature schemes described in this paper are over
+an arbitrary finite field $FF_q$ and its associated polynomial ring $FF_q [x]$.
+
+The representation of quadratic polynomials as matrices is used in the description of the scheme. Given a quadratic polynomial over $n$ variables $x_i in FF_q$, 
 
 = Oil and Vinegar Signatures
 	
-== Schema Description
+== Scheme Description
 	
-We begin by briefly presenting Kipnis and Shamir's variant of the Oil and Vinegar signature schema. Let $(m_1,dots,m_k) in FF_q$ be our message.
+The following is a brief presentation of Kipnis and Shamir's variant of the Oil and Vinegar signature scheme. The message $m$ is encoded as $(m_1,dots,m_k) in FF_q$.
 	
 === Key Generation
 	
 The *private key* $A$ is a randomly chosen invertible matrix in $FF_q^(2k times 2k)$.
 
-For the public key, $k$ random matrices $F_1, dots, F_k in FF_q^(2k times 2k)$ are first generated, such that the upper-left quadrant of each $F_i$ is zero, i.e.
+For the public key, $k$ random matrices $F_1, dots, F_k in FF_q^(2k times 2k)$ are first generated, such that the upper-left quadrant of each $F_i$ is the zero matrix of $F_q^(K times k)$, i.e.
 
 $
 F_i = mat(
@@ -148,12 +172,14 @@ $ <def-F>
 
 The *public key* is $G_1, dots, G_k$, with 
 $
-G_i := A^T F_i A
+G_i := A^top F_i A
 $
 	
 === Signature
 	
-Given a message $M in FF_q^k$, a *signature* is an $X = (x_1, dots, x_(2k)) in  FF_n^(2k)$, such that :
+In the following definition, the matrices $G_i$ are treated as quadratic polynomials over $FF_q^(2k)$, i.e. $G_i (x_1, dots, x_(2k)) := X^top G_i X$
+
+#definition[Given a message $M in FF_q^k$, a *signature* $X$ is a vector $(x_1, dots, x_(2k)) in  FF_n^(2k)$, such that
 $
   cases(
     G_1 (x_1, dots, x_(2k)) = m_1,
@@ -161,13 +187,17 @@ $
     dots.v,
     G_k (x_1, dots, x_(2k)) = m_k
   )
-$ <signature-def>
+$] <signature-def>
 
-for $m_1 m_2 dots m_k := M$.
+for $(m_1, m_2, dots, m_k) := M$. 
 
-To achieve this, a vector of $2k$ elements $Y = (y_1, dots, y_(2k)) in FF_n^(2k)$ is created. The first half of that vector $(y_1, dots, y_k)$ is the *oil* part and the second half $(y_(k+1), dots, y_(2k))$ the *vinegar* part.
+To achieve this, a vector of $2k$ elements $Y = (y_1, dots, y_(2k)) in FF_n^(2k)$ is constructed. The first $k$ elements of $Y$, $(y_1, dots, y_k)$, are referred to as the *oil* part and the latter half, $(y_(k+1), dots, y_(2k))$, the *vinegar* part.
 
-To create this Y, the *vinegar* is randomly generated. The *oil* part is generated using the following system of equations :
+#definition[The *oil subspace* of $Y$ is the subspace of $FF_q^(2k)$ where the last $k$ entries are $0$.]
+
+#definition[The *vinegar subspace* of $Y$ is the subspace of $FF_q^(2k)$ where the first $k$ entries are $0$.]
+
+To construct this $Y$, the *vinegar* part of $Y$ is first randomly generated. The *oil* part is generated using the following system of equations:
 $
   cases(
     Y^top F_1 Y = m_1,
@@ -176,21 +206,20 @@ $
   )
 $
 
-If the system has more than one solution, a new *vinegar* must be generated again until the system to solve is non singular. Having multiple solutions happens rarely.
+If this system has more than one solution, a new *vinegar* half is generated again at random, repeating until the resulting system has a unique solution. In practice, the need to regenerate a vinegar half is rare.
 
-For that system to be solved, it can be rewriten to a simpler form:
-
-Knowing $Y$ has two parts it can be considered as $Y = mat(O, V)$ with $O, V in FF_n^k$. Let $F_i$ one of the generated matrix in _[@def-F]_ and an $m_i in FF_q$, a bloc of the message. One can write :
+In order to solve this system, it can be rewritten by splitting $Y$ into its oil and vinegar parts, $Y = mat(O, V)$ with $O, V in FF_n^k$. Let $F_i$ be one of the generated matrices in @def-F and $m_i in FF_q$, a block of the message. This allows the reformulation of each equation as a linear system with $O$ as the sole unknown.
 $
   &&Y^top F_i Y                                           &= m_i\
-  &<=> &mat(O, V) mat(0, B_1 ; B_2, B_3) mat(O ; V)       &= m_i\
+  &<=> &mat(O^top, V^top) mat(0, B_1 ; B_2, B_3) mat(O ; V)       &= m_i\
   &<=> &mat(V^top B_2, (O^top B_1 + V^top B_3)) mat(O; V) &= m_i\
   &<=> &V^top B_2 O + (O^top B_1 + V^top B_3) V           &= m_i\
-  &<=> &V^top B_2 O + V^top B_1^top O + V^top B_3 V       &= m_i\
-  &<=> &(V^top B_2 + V^top B_1^top) O                     &= m_i - V^T B_3 V 
+  &<=> &V^top B_2 O + O^top B_1 V + V^top B_3 V       &= m_i\
+  &<=> &V^top B_2 O + V^top B_1^top O + V^top B_3 V       &= m_i (O^top B_1 V #[is a scalar])\ 
+  &<=> &(V^top B_2 + V^top B_1^top) O                     &= m_i - V^top B_3 V 
 $
 
-And finally :
+The system of equations is thus expressed as follows.
 $
   cases(
     Y^top F_1 Y = m_1 \
@@ -201,25 +230,23 @@ $
     dots.v;
     V^top B_(k, 2) + V^top B_(k, 1)^top;
   ) O = mat(
-    m_i - V^T B_(1, 3) V;
+    m_i - V^top B_(1, 3) V;
     dots.v;
-    m_i - V^T B_(k, 3) V
+    m_i - V^top B_(k, 3) V
   )
 $
 
-This is a linear $A x = b$ system to solve.
-	
-Now that $Y$ is generated, a signature $X$ for $M$ can be generated as :
+This is a linear system in terms of $O$ which may be solved using known methods. With $Y$ constructed, a signature $X$ for $M$ is now computed.
 $
   X := A^(-1) Y in FF_q^(2k)
 $ <signature-equation>
 
 === Verification
 
-#lemme[If a vector $X in FF_n^(2k)$ is a signature created with _[@signature-equation]_, then the _[@signature-def]_ is verified.]
+#proposition[If a vector $X in FF_n^(2k)$ is a signature created with @signature-equation, then the @signature-def is verified.]
 
 #proof[
-Given a message $M in FF_q^k$, a signature to this message $X in FF_q^(2k)$ created with _[@signature-equation]_ and a fixed $i in [|1; k|]$. One can verify that : 
+Given a message $M in FF_q^k$, a signature to this message $X in FF_q^(2k)$ created with @signature-equation, it follows for all $i in [|1; k|]$ that
 $
   X^top G_i X &= X^top (A^top F_i A) X\
               &= (A^(-1) Y)^top A^top F_i A A^(-1) Y\
@@ -227,19 +254,25 @@ $
               &= Y^top F_i Y = m_i
 $
 
-Therefore, ($X$ is a signature of $M) => X^top G_i X = m_i, forall i in [|1; k|]$. This is what _[@signature-def]_  says.
+Therefore, $X$ is a signature of $M$, i.e. $
+forall i in {1,dots, k} quad X^top G_i X = m_i
+$.
 ]
 
 == Attack on OV
 
-This attack is based on the one described by Kipnis & Shamir in the original paper. *ADD REF*.
+This attack is based on the one described by Kipnis & Shamir in their original paper @kipnis-shamir-1998cryptanalysis.
+
+#definition[Given a matrix $F_i$, $F_i^*$ is defined as $F_i + F_i^top$.]
+
+#lemma[If $F_i^*$ is invertible, then it is an automorphism on the oil subspace of $Y$.]
 
 One can consider that there is access to the $F$ matrices used in the key generation, similarly to Kipnis & Shamir. This is possible as it will be shown later that those matrices are not used to implement the attack. Non-invertible matrices are excluded, which be increasingly rare as the size of our base field and $k$ grow.
 
 While the original paper considers raw matrices $F_i$, this attack will instead focus on the modified forms given as follows.
 
 
-With the previous $F$ (see _[@def-F]_), $F^*$ is defined as:
+With the previous $F$ (see @def-F), $F^*$ is defined as:
 $
 F^* = F + F^T &= mat(
   0, B_1 + B_2^top;
@@ -252,7 +285,7 @@ F^* = F + F^T &= mat(
 $<def-F-star>
 With $C_i in FF_q^k$ being just a notation. 
 
-#lemme[
+#lemma[
 Similarly to the $F$ matrices used by Kipnis and Shamir, it can be notice that if $F^*$ is invertible (which is probable), then it maps the oil subspace of $Y$ to the vinegar subspace of $Y$.
 ]
 #proof[
@@ -269,11 +302,11 @@ $
 overline(F_(i, j)) = (F_i^*)^(-1) F_j^*
 $<def-F-bar>
 
-#lemme[
+#lemma[
   $overline(F_(i,j))$ is an automorphism on the oil subspace of $Y$.
 ]
 
-#lemme[
+#lemma[
 The inverse of $F^*$ has the form :
 $
 (F^*)^(-1) = mat(
@@ -302,7 +335,7 @@ $
 With $D_1 in FF_q^k$ being just a matrix that wont be compute.
 ]
 
-#lemme[
+#lemma[
 $overline(F_(i,j))$ has the form : 
 $
 mat(
@@ -340,9 +373,9 @@ $ <compute-F-bar>
 With again new notations with $hat(A), hat(B), hat(C) in FF_q^k$.
 ]
 
-#lemme[
+#lemma[
 The characteristic polynomial of $overline(F_(i, j))$ is a perfect square.
-]<lemme-poly-char-square>
+]<lemma-poly-char-square>
 
 
 
@@ -392,7 +425,7 @@ The $overline(F_(i,j))$ matrices cannot be directly computed, as they depend on 
 In that extend $G_(i,j)$ is defined as follow :
 $ G_(i,j) := (G_i + G_i^T)^(-1) (G_j + G_j^T) $
 
-#lemme[
+#lemma[
   $G_(i,j)$ is similar to $overline(F_(i,j))$
 ]
 
@@ -423,7 +456,7 @@ The process of finding the oil subspace using the characteristic polynomial meth
 
 +  #underline[Factor and Extract "Square Root":] The characteristic polynomial $chi_(G_(i,j))(x)$ is factored. It is known that $chi_(G_(i,j)) (X) = [P(X)]^2$, where $P(x)$ is a polynomial of degree $k$. The $P(X)$ polynomial is then extracted. If multiple factors are obtained in the factorization, the factor that results in a polynomial of degree $k$ is selected.
 
-+  #underline[Compute Kernel:] The polynomial  $P(X)$ is then evaluated at the matrix  $G_(i,j)$, resulting in  $P(G_(i,j))$. The kernel of this matrix,  $ker(P(G_(i,j)))$, is computed. By the theory of eigenspaces and characteristic polynomials [*REF KIPNIS SHAMIR*], this kernel will be either the oil subspace (of dimension  $k$).
++  #underline[Compute Kernel:] The polynomial  $P(X)$ is then evaluated at the matrix  $G_(i,j)$, resulting in  $P(G_(i,j))$. The kernel of this matrix,  $ker(P(G_(i,j)))$, is computed. By the theory of eigenspaces and characteristic polynomials @kipnis-shamir-1998cryptanalysis (section 4.2), this kernel will be either the oil subspace (of dimension  $k$).
 
 +  #underline[Iterate and Verify:]  Steps 1-4 are repeated with different pairs of indices $(i, j)$ until a $G_(i,j)$ matrix that yields a kernel of dimension $k$ is found. The dimension of the kernel can be easily checked. Once a kernel of the correct dimension has been found, the oil subspace will have been successfully identified (up to the transformation $A$). Since the oil and vinegar subspaces are complements of each other, when the oil is found, the vinegar is effectively revealed.
 
@@ -451,3 +484,9 @@ The implementation as been done using sagemath.
 + *Forging a signature*
 
 = VOX signature scheme
+
+
+
+
+#pagebreak()
+#bibliography(full:true, "biblio.bib")
