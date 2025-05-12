@@ -17,32 +17,22 @@ def forge_key(public_key):
         for f in factors:
             sqrt *= f[0]^(f[1]//2)
         ker = sqrt(candidate).right_kernel()
-        if (ker.dimension()*2 == G_i.nrows() or ker.dimension() == G_i.nrows()):
+        if (ker.dimension()*2 != G_i.nrows()):
             candidate = None
       
-    fake_A = ker.basis_matrix().transpose()
-    
-    
-    #fake_A = complete_basis(ker).transpose()
-    for i in range(len(public_key)):
-        M = fake_A.transpose() * public_key[i] * fake_A
-        print(M)
-        print(M.rank())
-    #fake_F = [fake_A.inverse().transpose()*G*fake_A.inverse() for G in public_key]
-    #return fake_A,fake_F
+    fake_A = complete_basis(ker).transpose().inverse()
+    fake_F = [fake_A.inverse().transpose()*G*fake_A.inverse() for G in public_key]
+    return fake_A,fake_F
 
 def forge_signature(message,public_key):
     A,F = forge_key(public_key)
     s = sign(message,A,F)
-    print(s)
-    print(certify(public_key,message,s))
+    return s
 
 def complete_basis(partial):
     bm = partial.basis_matrix()
-    print(bm)
     complement = bm.right_kernel().basis()
-    complete = complement + bm.rows()
-    print(complete)
+    complete = bm.rows() + complement
     return Matrix(complete)
 
 def forge_sign(public_key,message):

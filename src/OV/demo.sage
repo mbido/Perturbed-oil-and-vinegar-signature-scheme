@@ -89,4 +89,6 @@ if __name__ == "__main__":
   print(certify(C_public, message2, A_signed_2,2))
   print(certify(A_public, message2, C_signed_2,2))
   
-  forge_key(A_public)
+  print('FORGERY')
+  forgery = forge_signature(message1,A_public)
+  print('verified:',certify(A_public,message1,forgery))
