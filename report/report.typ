@@ -1,3 +1,15 @@
+// --- Getting something that looks like LateX
+#set page(margin: 1.75in, numbering: "1")
+#set math.mat(delim: "[")
+#set par(leading: 0.55em, spacing: 0.55em, first-line-indent: 1.8em, justify: true)
+#set text(
+  lang: "en"
+)
+#set text(font: "New Computer Modern")
+#show raw: set text(font: "New Computer Modern Mono")
+#show heading: set block(above: 1.4em, below: 1em)
+// ---
+
 // --- Theorems
 #import "@preview/ctheorems:1.1.3": *
 #show: thmrules.with(qed-symbol: $square$)
@@ -17,16 +29,25 @@
 #let proof = thmproof("proof", "Proof", base_level:0, base: "heading")
 // ---
 
-// --- Getting something that looks like LateX
-#set page(margin: 1.75in, numbering: "1")
-#set math.mat(delim: "[")
-#set par(leading: 0.55em, spacing: 0.55em, first-line-indent: 1.8em, justify: true)
-#set text(
-  lang: "en"
+// --- Pseudo code 
+#import "@preview/lovelace:0.3.0": *
+
+#let take-rnd = math.attach(
+  math.arrow.l, // Élément de base (la flèche gauche)
+  t: text(scale(150%, sym.die.three)) // Élément à attacher au-dessus (t: pour top)
 )
-#set text(font: "New Computer Modern")
-#show raw: set text(font: "New Computer Modern Mono")
-#show heading: set block(above: 1.4em, below: 1em)
+#let comment(input) = text(rgb("#555"))[#h(1fr) _/\/ #input _ #h(5pt)]
+#let algo-counter = counter("algo-counter")
+#let algo(title, code) = {
+  align(center)[
+    #algo-counter.step()
+    #box(
+      stroke: black + 0.5pt,
+      inset:2pt,
+      pseudocode-list([- *Algorithm #context algo-counter.display() :* #title] + code)
+    )
+  ]
+}
 // ---
 
 // --- some shortcuts
@@ -439,26 +460,40 @@ As $overline(F_(i,j))$ and $overline(G_(i,j))$ are similar, they have the same c
 
 \ Similar matrices have the same characteristic polynomial, and their eigenspaces are related by the similarity transformation (in this case, $A$).  Therefore, finding the eigenspaces of $G_(i,j)$ will recover the oil subspace, up to the unknown transformation $A$.\ \
 
-The process of finding the oil subspace using the characteristic polynomial method is as follows:
+Furthermore, a new secret key $hat(A)$ that can sign messages as if the secret key $A$ was known can be forge using the following `ForgeSecretKey` algorithm.
 
-- #underline[Construct a $overline(G_(i,j))$ Matrix:]
-  A random pair of indices $(i, j) in [|1; k|]^2$ is first selected. Using the publicly available $G_i$ matrices, $overline(G_(i,j)) = (G_i + G_i^top)^(-1) (G_j + G_j^top)$ is computed. Any $G_i$ for which $(G_i + G_i^top)$ is not invertible is filtered out. In practice, the majority of the $overline(G_(i,j))$ are expected to satisfy this invertibility condition. This requires 2 additions, 1 inversion, and 1 multiplication of matrices of size $2k$. The complexity is $O(k^omega)$.
+#algo("ForgeSecretKey")[
+  - *Input:* A public key $G in (FF_q^(2k times 2k))^k$.
+  - *Output:* An alternative private key $hat(A) in FF_q^(2k times 2k)$ that can sign messages for the public key $G$.
+  - $overline(G) :=$ *None*
+  - *While* $overline(G)$ *is None do*
+    - $(i, j) #take-rnd [|0, k-1|]^2$ #comment[taken at random]
+    - *if* $(G_i + G_i^T)^(-1)$ *exists do*
+      - $overline(G_(i,j)) := (G_i + G_i^T)^(-1) (G_j + G_j^T) in FF_q^(2k times 2k)$
+      - *if* $(overline(G_(i,j)))^(-1)$ *exists:* $overline(G) <- overline(G_(i,j))$
+  - $Q(X) := chi_(overline(G)) (X) in FF_q [X]$ #comment[the characteristic polynomial]
+  - $P(X) := sqrt(K(X)) in FF_q [X]$ #comment[it exists as Q(X) is a perfect square]
+  - $K := ker(P(overline(G))) subset.eq FF_q^(2k times 2k$
+  - *if* $dim(K) != k$ *do Return* ForgeSecretKey(G)
+  - *Return* $hat(A) := text("basis")(K) in FF_q^(2k times 2k)$
+]
 
--  #underline[Characteristic Polynomial Computation:]  For each constructed  $G_(i,j)$ matrix, its characteristic polynomial, denoted as  $chi_(G_(i,j)) (X)$, is computed. Using Berkowitz's algorithm, this is achieved in $O(k^4)$.
 
--  #underline[Factor and Extract "Square Root":] The characteristic polynomial $chi_(G_(i,j))(x)$ is factored. It is known that $chi_(G_(i,j)) (X) = [P(X)]^2$, where $P(x)$ is a polynomial of degree $k$. The $P(X)$ polynomial is then extracted.
+// - #underline[Construct a $overline(G_(i,j))$ Matrix:]
+//   A random pair of indices $(i, j) in [|1; k|]^2$ is first selected. Using the publicly available $G_i$ matrices, $overline(G_(i,j)) = (G_i + G_i^top)^(-1) (G_j + G_j^top)$ is computed. Any $G_i$ for which $(G_i + G_i^top)$ is not invertible is filtered out. In practice, the majority of the $overline(G_(i,j))$ are expected to satisfy this invertibility condition. This requires 2 additions, 1 inversion, and 1 multiplication of matrices of size $2k$. The complexity is $O(k^omega)$.
 
--  #underline[Compute Kernel:] The polynomial  $P(X)$ is then evaluated at the matrix  $G_(i,j)$, resulting in  $P(G_(i,j))$. The kernel of this matrix,  $ker(P(G_(i,j)))$, is computed. By the theory of eigenspaces and characteristic polynomials @kipnis-shamir-1998cryptanalysis (section 4.2 Theorem 9), this kernel will be either the oil subspace (of dimension  $k$).
+// -  #underline[Characteristic Polynomial Computation:]  For each constructed  $G_(i,j)$ matrix, its characteristic polynomial, denoted as  $chi_(G_(i,j)) (X)$, is computed. Using Berkowitz's algorithm, this is achieved in $O(k^4)$.
 
--  #underline[Iterate and Verify:]  Steps 1-4 are repeated with different pairs of indices $(i, j)$ until a $G_(i,j)$ matrix that yields a kernel of dimension $k$ is found. The dimension of the kernel can be easily checked. Once a kernel of the correct dimension has been found, the oil subspace will have been successfully identified (up to the transformation $A$). Since the oil and vinegar subspaces are complements of each other, when the oil is found, the vinegar is effectively revealed.
+// -  #underline[Factor and Extract "Square Root":] The characteristic polynomial $chi_(G_(i,j))(x)$ is factored. It is known that $chi_(G_(i,j)) (X) = [P(X)]^2$, where $P(x)$ is a polynomial of degree $k$. The $P(X)$ polynomial is then extracted.
 
-- #underline[Construct Forged Key] Once the kernel is found, its basis matrix (transposed) serves as a fake $A$. This matrix allows to create valid signatures.
+// -  #underline[Compute Kernel:] The polynomial  $P(X)$ is then evaluated at the matrix  $G_(i,j)$, resulting in  $P(G_(i,j))$. The kernel of this matrix,  $ker(P(G_(i,j)))$, is computed. By the theory of eigenspaces and characteristic polynomials @kipnis-shamir-1998cryptanalysis (section 4.2 Theorem 9), this kernel will be either the oil subspace (of dimension  $k$).
 
-Once the oil subspace (represented by the kernel of $P(G_(i,j))$) has been identified, the security of the scheme can be considered broken. The kernel's basis vectors can be arranged into columns of a matrix that can be used as a substitute for the secret key $A$ in the signing process. Let $K$ be the matrix whose columns are formed by the basis vectors of the recovered kernel. Valid signatures for arbitrary messages can then be generated using $K$, following the same procedure as the legitimate signer (but with $K$ used instead of $A$). The signatures generated in this way will be valid because the signing algorithm depends only on the relationship between the oil and vinegar variables, which is preserved by the transformation $K$
+// -  #underline[Iterate and Verify:]  Steps 1-4 are repeated with different pairs of indices $(i, j)$ until a $G_(i,j)$ matrix that yields a kernel of dimension $k$ is found. The dimension of the kernel can be easily checked. Once a kernel of the correct dimension has been found, the oil subspace will have been successfully identified (up to the transformation $A$). Since the oil and vinegar subspaces are complements of each other, when the oil is found, the vinegar is effectively revealed.
 
-== Implementation
-	
-The implementation has been done using SageMath.
+// - #underline[Construct Forged Key] Once the kernel is found, its basis matrix (transposed) serves as a fake $A$. This matrix allows to create valid signatures.
+
+// Once the oil subspace (represented by the kernel of $P(G_(i,j))$) has been identified, the security of the scheme can be considered broken. The kernel's basis vectors can be arranged into columns of a matrix that can be used as a substitute for the secret key $A$ in the signing process. Let $K$ be the matrix whose columns are formed by the basis vectors of the recovered kernel. Valid signatures for arbitrary messages can then be generated using $K$, following the same procedure as the legitimate signer (but with $K$ used instead of $A$). The signatures generated in this way will be valid because the signing algorithm depends only on the relationship between the oil and vinegar variables, which is preserved by the transformation $K$
+
 
 === Complexities and sizes
 - *Key Generation*
@@ -475,9 +510,9 @@ The implementation has been done using SageMath.
 - *Verification*
 - *Forging a signature*
 
-= VOX signature scheme
-
-
+= OV+ signature scheme
+== Scheme Description
+== Security parameters
 
 
 #pagebreak()
