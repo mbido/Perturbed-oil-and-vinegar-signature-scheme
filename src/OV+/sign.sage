@@ -21,7 +21,9 @@ def generate_S_mixer(field, k, t, verbose=0):
   
   if verbose > 0:
     print(f"\n=======\nBegin generate_S_mixer() with k = {k}, t = {t}, verbose = {verbose}\n=======\n")
-  S = block_matrix([[identity_matrix(field,t), random_matrix(field,t,k-t)],[zero_matrix(field,k-t,t),identity_matrix(field,k-t)]],subdivide=False)
+  S = None
+  while S is None or rank(S) != k:
+    S = random_matrix(field,k)
   if verbose > 0:
     print(S)
   return S
@@ -44,7 +46,9 @@ def generate_T_mixer(field, k, verbose=0):
   """
   if verbose > 0:
     print(f"\n=======\nBegin generate_T_mixer() with k = {k}, verbose = {verbose}\n=======\n")
-  T = block_matrix([[identity_matrix(field,k), random_matrix(field,k)],[zero_matrix(field,k),identity_matrix(field,k)]],subdivide=False)
+  T = None
+  while T is None or rank(T) != 2*k:
+    T = random_matrix(field,2*k)
   if verbose > 0:
     print(T)
   return T
@@ -130,8 +134,8 @@ def generate_public_key(S, T, F, verbose=0):
 
   H = []
   for i,G_e in enumerate(G):
-    H_e = G_e
-    for j in range(i):
+    H_e = zero_matrix(S.base_ring(),2*k)
+    for j in range(k):
       H_e += S[j][i] * G[j]
     H.append(H_e)
 
@@ -140,7 +144,6 @@ def generate_public_key(S, T, F, verbose=0):
     [print(f"{H_e}\n") for H_e in H]
 
   return H
-
 
 
 def create_linear_system(M, F, t, V, verbose=0):
@@ -198,9 +201,6 @@ def solve_quadratic_system(M, Y0, K, F, t, V, verbose=0):
   """
   # To simplify and convert Fi into a symmetric form, we need characteristic != 2 (change later)
   field = V.base_ring()
-  if field.characteristic() == 2:
-    print('error characteristic = 2')
-    exit()
   # Setup equation in form z^T A z + B z + C = 0
   pring = PolynomialRing(field, t, names="z")
   z = matrix(pring,t,1,pring.gens())
