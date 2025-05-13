@@ -1,0 +1,156 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{lipsum} % Pour ajouter du texte dans l'exemple
+\usepackage{fancyhdr} % Pour personnaliser les en-têtes et pieds de page
+
+% \hypersetup{
+	%     colorlinks=true,
+	%     linkcolor=blue,
+	%     filecolor=magenta,      
+	%     urlcolor=cyan,
+	%     citecolor=blue,
+	% }
+
+% header & footer
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\textit{CCA -- Research project}}
+\fancyhead[R]{\thepage}
+
+\begin{document}
+	
+	
+	\begin{titlepage}
+		\centering
+		{\Huge\textbf{CCA Project -- Unbalanced Oil and Vinegar Signature Schemes}\par}
+		\vspace{0.5cm}
+		{\Large Nicholas Bell and Matthieu Bidault\par}
+		\vspace{0.5cm}
+		{\Large supervised by Pierre Pébereau\par}
+		\vfill
+		\textit{2024-2025}
+		\vspace*{\fill}
+	\end{titlepage}
+	
+	\setcounter{tocdepth}{3}
+	\tableofcontents
+	\thispagestyle{fancy}
+	\newpage
+	
+	\section{Oil and Vinegar Signatures}
+	
+	\subsection{Schema Description}
+	
+	We begin by briefly presenting Kipnis and Shamir's variant of the Oil and Vinegar signature schema. Let $(m_1,\dots,m_k) \in \mathbb{F}_q$ be our message.
+	
+	\subsubsection{Key Generation}
+	
+	Our \textbf{private key} $A$ is a randomly chosen invertible matrix in $\mathbb{F}_q^{2k\times2k}$.\\
+	
+	For our public key we first generate $k$ random matrices $F_1,\dots,F_k \in \mathbb{F}_q^{2k\times2k}$, such that the upper-left quadrant of each $F_i$ is zero, i.e. $$F_i = \begin{bmatrix}
+	0 & B_1\\
+	B_2 & B_3
+	\end{bmatrix}\text{, for }B_i \in \mathbb{F}_q^{k\times k}$$. Our \textbf{public key} is $G_1,\dots,G_k$, with $$G_i := A^TF_iA$$.
+	
+	\subsubsection{Signature}
+	
+	Given a message $m \in \mathbb{F}_q^{k}$, we first 
+	
+	Étant donné un message $M \in \mathcal{F}_n^k$, nous voulons construire une \textbf{signature} $X = (x_1, \dots, x_{2k}) \in \mathcal{F}_n^{2k}$, c'est-à-dire :
+	
+	$$
+	\begin{cases}
+		G_1(x_1,...,x_{2k}) = m_1 \\
+		G_2(x_1,...,x_{2k}) = m_2 \\
+		\vdots \\
+		G_k(x_1,...,x_{2k}) = m_k
+	\end{cases}
+	$$
+	
+	Pour cela, nous créons d'abord $Y = (y_1, \dots, y_{2k}) \in \mathcal{F}_n^{2k}$. La première partie $(y_1, \dots, y_k)$ est appelée l'\textbf{huile} et la seconde partie $(y_{k + 1}, \dots, y_{2k})$ est appelée le \textbf{vinaigre}. Le vinaigre est généré aléatoirement. Pour obtenir l'huile, nous devons résoudre le système suivant :
+	
+	$$
+	\begin{cases}
+		Y^\top F_1 Y = m_1 \\
+		\vdots \\
+		Y^\top F_k Y = m_k
+	\end{cases}
+	$$
+	
+	Si le système n'a pas de solution unique, nous générons un nouveau vinaigre et résolvons le système, jusqu'à ce que nous trouvions un système avec une seule solution.
+	
+	Soit $Y = \begin{bmatrix} O \\ V \end{bmatrix}$ avec $O, V \in \mathcal{F}_n^k$.
+	
+	Soit $F_e =
+	\begin{bmatrix}
+		0 & B_1 \\
+		B_2 & B_3
+	\end{bmatrix}$ avec $B_i \in \mathcal{F}_n^{k \times k}$.
+	
+	Soit $m_e \in \mathcal{F}_n$.
+	
+	Alors :
+	\begin{align*}
+		&&Y^\top F_e Y &= m_e \\
+		&\Leftrightarrow &\begin{bmatrix} O^\top & V^\top \end{bmatrix} \begin{bmatrix}
+			0 & B_1 \\
+			B_2 & B_3
+		\end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
+		&\Leftrightarrow &\begin{bmatrix} V^\top B_2 & (O^\top B_1 + V^\top B_3) \end{bmatrix} \begin{bmatrix} O \\ V \end{bmatrix} &= m_e \\
+		&\Leftrightarrow &V^\top B_2 O + (O^\top B_1 + V^\top B_3) V &= m_e \\
+		&\Leftrightarrow &V^\top B_2 O + V^\top B_1^\top O + V^\top B_3V &= m_e \\
+		&\Leftrightarrow &(V^\top B_2 + V^\top B_1^\top) O &= m_e - V^\top B_3 V
+	\end{align*}
+	
+	Et donc :
+	
+	$$
+	\begin{cases}
+		Y^\top F_1 Y = m_1 \\
+		\vdots \\
+		Y^\top F_k Y = m_k
+	\end{cases}
+	\Leftrightarrow\begin{bmatrix}
+		V^\top B_{1, 2} + V^\top B_{1, 1}^\top \\
+		\vdots \\
+		V^\top B_{k, 2} + V^\top B_{k, 1}^\top
+	\end{bmatrix}
+	O = \begin{bmatrix}
+		m_1 - V^\top B_{1, 3}V\\
+		\vdots \\
+		m_k - V^\top B_{k, 3}V
+	\end{bmatrix}
+	$$
+	
+	C'est un simple système $Ax = b$ à résoudre !
+	
+	Nous pouvons maintenant obtenir notre signature $X$ définie comme suit :
+	
+	$$X := A^{-1}Y$$
+	
+	\subsubsection{Verification}
+	
+	A signature $\mathbf{x} = (x_1,\dots,x_{2k})$ is valid if for all $i$, $x_i^TG_ix_i$ 
+	
+	\subsection{Proof of Correctness}
+	
+	salle u
+	
+	\subsection{Implementation}
+	
+	sait khi ?
+	
+	\section{An Improved Attack}
+	
+	\subsection{}
+		
+\end{document}

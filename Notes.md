@@ -183,10 +183,95 @@ We can construct higher degree polynomials by multiplying $(x-\lambda)$ for each
 
 If $M$ has no eigenvalues?
 
-If p is the characteristic polynomial, then $\dim \ker(p(M)) = n$
+If p is the minimal polynomial (or a product, such as the characteristic polynomial), then $\dim \ker(p(M)) = n$
 
 
 
 Unique monic annihilating polynomial
 
+
 Consider a polynomial p of minimal degree such that p(M) = 0. We may force this to be monic by multiplying by the inverse of its most significant coefficient. We show this is unique: assume a and b are two distinct monic polynomials of degree d such that a(M) = 0 = b(M). Then a-b has degree at most d-1 and (a-b)(M) = a(M) - b(M) = 0. This is a contradiction, so there is a unique minimal polynomial p that is monic and such that p(M)=0.
+
+
+## Le Schéma de Signature OV+ (Notation Matricielle KS)
+
+OV+ est une modification du schéma Oil and Vinegar (OV) original (équilibré, $v=n$) conçue pour contrecarrer l'attaque de Kipnis-Shamir. Elle introduit des termes "huile $\times$ huile" dans certaines équations secrètes.
+
+### 1. Contexte : Rappel sur OV Équilibré (Notation KS)
+
+*   **Variables Secrètes ($Y$) :** Un vecteur de $2n$ variables $Y = (y_1, \dots, y_n, y_{n+1}, \dots, y_{2n})^T \in \mathbb{F}_q^{2n}$.
+    *   $Y_O = (y_1, \dots, y_n)^T$ : Vecteur des $n$ variables "huile".
+    *   $Y_V = (y_{n+1}, \dots, y_{2n})^T$ : Vecteur des $n$ variables "vinaigre".
+*   **Variables Publiques ($X$) :** Un vecteur de $2n$ variables $X \in \mathbb{F}_q^{2n}$.
+*   **Transformation Secrète ($A$) :** Une matrice **secrète** $A \in GL_{2n}(\mathbb{F}_q)$ (matrice $2n \times 2n$ inversible) reliant les variables : $Y = AX$. $A$ mélange les variables huile et vinaigre.
+*   **Équations Secrètes (Quadratiques) :** $n$ équations $Y^T F_i Y = m_i$ pour $i = 1, \dots, n$, où $m = (m_1, \dots, m_n)^T$ est le hash du message. Les $F_i$ sont des matrices secrètes $2n \times 2n$.
+*   **Structure OV des $F_i$ :** La propriété clé d'OV est que les matrices $F_i$ ont une structure par blocs spécifique par rapport à la partition Huile/Vinaigre :
+    $$ F_i = \begin{pmatrix} 0_{n \times n} & A_i \\ B_i & C_i \end{pmatrix} $$
+    où $0_{n \times n}$ est la matrice nulle $n \times n$, et $A_i, B_i, C_i$ sont des matrices $n \times n$ secrètes. (Souvent $B_i = A_i^T$). Le bloc nul $0_{n \times n}$ signifie qu'il n'y a pas de termes $y_j y_k$ avec $j, k \le n$ (huile $\times$ huile) dans $Y^T F_i Y$.
+*   **Clé Publique (Matrices $P_i$) :** Les $n$ équations publiques sont $X^T P_i X = m_i$, où les matrices publiques $P_i$ sont données par :
+    $$ P_i = A^T F_i A $$
+    La clé publique est l'ensemble $\{P_1, \dots, P_n\}$.
+*   **Attaque KS :** Exploite la structure des $F_i$ et le fait que $n=v$ pour trouver l'espace "huile" public $\mathcal{O}_{pub} = A^{-1}(\text{span}\{e_1, \dots, e_n\})$ en analysant les produits $P_i P_j^{-1}$.
+
+### 2. Introduction d'OV+ (Notation KS)
+
+OV+ modifie la structure des matrices secrètes $F_i$.
+
+### 3. Paramètres d'OV+
+
+*   $q$ : Ordre du corps fini $\mathbb{F}_q$.
+*   $n$ : Nombre de variables huile *et* de variables vinaigre. Dimension totale $2n$. Nombre d'équations $n$.
+*   $t$ : Entier $0 \le t \le n$, nombre d'équations secrètes perturbées.
+
+### 4. Génération des Clés OV+
+
+*   **Clé Secrète :**
+    1.  Choisir une matrice secrète inversible $A \in GL_{2n}(\mathbb{F}_q)$.
+    2.  Choisir $n$ matrices secrètes $F_1, \dots, F_n$ de taille $2n \times 2n$ avec la structure suivante :
+        *   **Pour $i = 1, \dots, t$ (Matrices Perturbées) :**
+            $$ F_i = \begin{pmatrix} Q_i & A_i \\ B_i & C_i \end{pmatrix} \quad \text{avec } Q_i \neq 0_{n \times n} $$
+            $Q_i$ est une matrice $n \times n$ **non nulle** (souvent symétrique et aléatoire) représentant les termes huile $\times$ huile aléatoires. $A_i, B_i, C_i$ sont des matrices $n \times n$ secrètes aléatoires (avec $B_i = A_i^T$ si on travaille avec des formes bilinéaires symétriques).
+        *   **Pour $i = t+1, \dots, n$ (Matrices OV Standard) :**
+            $$ F_i = \begin{pmatrix} 0_{n \times n} & A_i \\ B_i & C_i \end{pmatrix} $$
+            Ces matrices ont la structure OV classique sans termes huile $\times$ huile.
+    La clé secrète est $(A, \{F_1, \dots, F_n\})$.
+
+*   **Clé Publique :**
+    1.  Calculer les $n$ matrices publiques $P_i = A^T F_i A$.
+    2.  La clé publique est l'ensemble $\{P_1, \dots, P_n\}$.
+
+### 5. Génération de Signature OV+
+
+Pour signer un message $M$ (avec hash $m = H(M) \in \mathbb{F}_q^n$) :
+1.  **Objectif :** Trouver $X$ tel que $X^T P_i X = m_i$ pour $i=1, \dots, n$. Ceci est équivalent à trouver $Y$ tel que $Y^T F_i Y = m_i$ puis calculer $X=A^{-1}Y$.
+2.  **Choisir le Vinaigre :** Fixer aléatoirement le vecteur des variables vinaigre $Y_V \in \mathbb{F}_q^n$.
+3.  **Formuler le Système en Huile $Y_O$ :** Le système $Y^T F_i Y = m_i$ s'écrit, en décomposant $Y = \begin{pmatrix} Y_O \\ Y_V \end{pmatrix}$ :
+    *   Pour $i=1, \dots, t$ :
+        $$ \begin{pmatrix} Y_O \\ Y_V \end{pmatrix}^T \begin{pmatrix} Q_i & A_i \\ B_i & C_i \end{pmatrix} \begin{pmatrix} Y_O \\ Y_V \end{pmatrix} = Y_O^T Q_i Y_O + Y_O^T A_i Y_V + Y_V^T B_i Y_O + Y_V^T C_i Y_V = m_i $$
+        C'est une équation **quadratique** en les $n$ inconnues de $Y_O$.
+    *   Pour $i=t+1, \dots, n$ :
+        $$ \begin{pmatrix} Y_O \\ Y_V \end{pmatrix}^T \begin{pmatrix} 0 & A_i \\ B_i & C_i \end{pmatrix} \begin{pmatrix} Y_O \\ Y_V \end{pmatrix} = Y_O^T A_i Y_V + Y_V^T B_i Y_O + Y_V^T C_i Y_V = m_i $$
+        C'est une équation **linéaire** en les $n$ inconnues de $Y_O$ (puisque $Y_V$ est fixé).
+4.  **Résoudre le Système Mixte :**
+    *   On a $n-t$ équations linéaires et $t$ équations quadratiques pour les $n$ variables de $Y_O$.
+    *   Résoudre le système linéaire (les $n-t$ dernières équations) pour exprimer $n-t$ variables de $Y_O$ en fonction des $t$ autres (si rang $n-t$).
+    *   Substituer dans les $t$ équations quadratiques pour obtenir un système de $t$ équations quadratiques en $t$ variables.
+    *   Résoudre ce système $t \times t$ quadratique.
+    *   Si une solution $Y_O$ est trouvée, former $Y = \begin{pmatrix} Y_O \\ Y_V \end{pmatrix}$.
+    *   Sinon (pas de solution linéaire ou quadratique), retourner à l'étape 2 avec un nouveau $Y_V$.
+5.  **Calculer la Signature Publique :** $X = A^{-1}Y$.
+
+### 6. Vérification de Signature OV+
+
+Identique à OV :
+1.  Calculer $m = H(M)$.
+2.  Calculer $m'_{i} = X^T P_i X$ pour $i=1, \dots, n$ en utilisant la clé publique $\{P_i\}$ et la signature $X$.
+3.  Vérifier si $m' = m$.
+
+### 7. Considérations de Sécurité (Notation KS)
+
+*   **Attaque KS directe :** L'attaque originale calculait l'espace invariant $\mathcal{O}_{pub} = A^{-1}(\text{span}\{e_1, \dots, e_n\})$ commun aux opérateurs $P_i P_j^{-1}$. Cette attaque échoue si $P_i$ ou $P_j$ provient d'une matrice $F_k$ perturbée ($k \le t$), car la structure $F_k O \subseteq V$ n'est plus garantie à cause du bloc $Q_k$. L'opérateur $P_i P_j^{-1}$ ne laisse plus nécessairement $\mathcal{O}_{pub}$ invariant.
+*   **Nécessité d'isoler les équations non perturbées :** Un attaquant pourrait essayer de trouver des combinaisons linéaires des $P_i$ qui correspondent uniquement aux $F_j$ non perturbées ($j > t$) pour ensuite appliquer l'attaque KS. La difficulté réside dans le fait de trouver ces combinaisons spécifiques (c'est l'idée derrière la condition $q^{2t}$ ou $q^{3t}$ dans les analyses d'attaques sur les variantes "+").
+*   **Rôle de $t$ :** Le paramètre $t$ contrôle le compromis entre la complexité de la signature (résolution $t \times t$ quadratique) et la résistance présumée aux attaques structurelles comme KS.
+
+En utilisant la notation matricielle de KS, on voit clairement comment la perturbation "+" (l'introduction des blocs $Q_i \neq 0$ pour $i \le t$) modifie la structure algébrique fondamentale des matrices secrètes $F_i$, rendant l'analyse par espace invariant de l'attaque KS inapplicable directement.
