@@ -218,4 +218,3 @@ def sign(message, A, F, verbose=0):
     print(f"X : {X}")
 
   return X
-
