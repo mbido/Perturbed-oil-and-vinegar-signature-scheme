@@ -1,42 +1,50 @@
-@misc{cogliati2023voxsign,
-  author = {Cogliati, B. and Faugère, J.C. and Fouque, P.A. and Goubin, L. and Larrieu, R. and Macario-Rat, G. and Minaud, B. and Patarin, J.},
-  title = {Vox-sign},
-  year = {2023},
-  url = {http://vox-sign.com/files/vox_nist.pdf},
-  note = {consulted 05/10/2023}
+
+@misc{vox,
+  author    = {Benoît Cogliati and Jean-Charles Faugère and Pierre-Alain Fouque and Louis Goubin and Robin Larrieu and Gilles Macario-Rat and Brice Minaud and Jacques Patarin},
+  title     = {{VOX Specification v1.1}},
+  institution = {vox-sign.com},
+  year      = {2024},
+  month     = {May},
+  day       = {17}, 
+  url       = {https://vox-sign.com/files/vox_1-1_spec.pdf},
 }
 
-@techreport{faugere2022newperturbation,
-  author = {Faugère, J.C. and Macario-Rat, G. and Patarin, J. and Perret, L.},
-  title = {A new perturbation for multivariate public key schemes such as HFE andUOV},
-  institution = {Cryptology ePrint Archive},
-  number = {2022/203},
-  year = {2022},
-  url = {https://eprint.iacr.org/2022/203}
+@misc{faugere2022newperturbation,
+      author = {Jean-Charles Faugère and Gilles macario-Rat and Jacques Patarin and Ludovic Perret},
+      title = {A New Perturbation for Multivariate Public Key Schemes such as {HFE} and {UOV}},
+      howpublished = {Cryptology {ePrint} Archive, Paper 2022/203},
+      year = {2022},
+      url = {https://eprint.iacr.org/2022/203}
 }
 
-@inproceedings{kipnis1-Patarin-Goubin-999unbalanced,
-  author = {Kipnis, A. and Patarin, J. and Goubin, L.},
-  title = {Unbalanced oil and vinegar signature schemes},
-  booktitle = {Advances in Cryptology EUROCRYPT '99},
-  series = {Lecture Notes in Computer Science},
-  volume = {1592},
-  pages = {206--222},
-  publisher = {Springer},
-  year = {1999},
-  doi = {10.1007/3-540-48910-X_15}
+
+@InProceedings{kipnis1-Patarin-Goubin-999unbalanced,
+author="Kipnis, Aviad
+and Patarin, Jacques
+and Goubin, Louis",
+editor="Stern, Jacques",
+title="Unbalanced Oil and Vinegar Signature Schemes",
+booktitle="Advances in Cryptology --- EUROCRYPT '99",
+year="1999",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="206--222",
+abstract="In [16], J. Patarin designed a new scheme, called ``Oil and Vinegar'', for computing asymmetric signatures. It is very simple, can be computed very fast (both in secret and public key) and requires very little RAM in smartcard implementations. The idea consists in hiding quadratic equations in n unknowns called ``oil'' and v = n unknowns called ``vinegar'' over a finite field K, with linear secret functions. This original scheme was broken in [10] by A. Kipnis and A. Shamir. In this paper, we study some very simple variations of the original scheme where v > n (instead of v = n). These schemes are called ``Unbalanced Oil and Vinegar'' (UOV), since we have more ``vinegar'' unknowns than ``oil'' unknowns. We show that, when v ⋍ n, the attack of [10] can be extended, but when v ≥ 2n for example, the security of the scheme is still an open problem. Moreover, when {\$}{\$}v {\backslash}simeq {\backslash}tfrac{\{}{\{}n^2 {\}}{\}}{\{}2{\}}{\$}{\$}, the security of the scheme is exactly equivalent (if we accept a very natural but not proved property) to the problem of solving a random set of n quadratic equations in {\$}{\$}{\backslash}tfrac{\{}{\{}n^2 {\}}{\}}{\{}2{\}}{\$}{\$}unknowns (with no trapdoor). However, we show that (in characteristic 2) when v ≥ n2, finding a solution is generally easy. Then we will see that it is very easy to combine the Oil and Vinegar idea and the HFE schemes of [14]. The resulting scheme, called HFEV, looks at the present also very interesting both from a practical and theoretical point of view. The length of a UOV signature can be as short as 192 bits and for HFEV it can be as short as 80 bits.",
+isbn="978-3-540-48910-8"
 }
 
-@inproceedings{kipnis-shamir-1998cryptanalysis,
-  author = {Kipnis, A. and Shamir, A.},
-  title = {Cryptanalysis of the oil \& vinegar signature scheme},
-  booktitle = {Advances in Cryptology CRYPTO '98},
-  series = {Lecture Notes in Computer Science},
-  volume = {1462},
-  pages = {257--266},
-  publisher = {Springer},
-  year = {1998},
-  doi = {10.1007/BFb0055733}
+@InProceedings{kipnis-shamir-1998cryptanalysis,
+author="Kipnis, Aviad
+and Shamir, Adi",
+editor="Krawczyk, Hugo",
+title="Cryptanalysis of the oil and vinegar signature scheme",
+booktitle="Advances in Cryptology --- CRYPTO '98",
+year="1998",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="257--266",
+abstract="Several multivariate algebraic signature schemes had been proposed in recent years, but most of them had been broken by exploiting the fact that their secret trapdoors are low rank algebraic structures. One of the few remaining variants is Patarin's''Oil {\&} Vinegar'' scheme, which is based on a system of n quadratic forms in 2n variables of two flavors (n ''oil'' variables and n ''vinegar'' variables). The security of the scheme depends on the difficulty of distinguishing between the two types, and does not seem to be susceptible to known low rank attacks. In this paper we describe two novel algebraic attacks which can efficiently separate the oil and vinegar variables, and thus forge arbitrary signatures.",
+isbn="978-3-540-68462-6",
 }
 
 @misc{sagemath,
@@ -45,4 +53,176 @@
   year = {2022},
   url = {https://www.sagemath.org},
   doi = {10.5281/zenodo.6259615}
+}
+
+@article{complexityf5,
+  author       = {Magali Bardet and
+                  Jean{-}Charles Faug{\`{e}}re and
+                  Bruno Salvy},
+  title        = {On the Complexity of the {F5} Gr{\"{o}}bner basis Algorithm},
+  journal      = {CoRR},
+  volume       = {abs/1312.1655},
+  year         = {2013},
+  url          = {http://arxiv.org/abs/1312.1655},
+  eprinttype    = {arXiv},
+  eprint       = {1312.1655},
+  timestamp    = {Mon, 13 Aug 2018 16:48:57 +0200},
+  biburl       ={https://dblp.org/rec/journals/corr/BardetFS13.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+@techreport{NIST:2022:DSproposals,
+  author = {{National Institute of Standards and Technology}},
+  title = {{Call for Additional Digital Signature Schemes for the Post-Quantum Cryptography Standardization Process}},
+  institution = {{National Institute of Standards and Technology}},
+  year = {2022},
+  month = {September},
+  url = {https://csrc.nist.gov/csrc/media/Projects/pqc-dig-sig/documents/call-for-proposals-dig-sig-sept-2022.pdf},
+  address = {Gaithersburg, MD},
+}
+
+@misc{williams2023newboundsmatrixmultiplication,
+      title={New Bounds for Matrix Multiplication: from Alpha to Omega}, 
+      author={Virginia Vassilevska Williams and Yinzhan Xu and Zixuan Xu and Renfei Zhou},
+      year={2023},
+      eprint={2307.07970},
+      archivePrefix={arXiv},
+      primaryClass={cs.DS},
+      url={https://arxiv.org/abs/2307.07970}, 
+}
+
+@article{BettaleFaugerePerret2009,
+  TITLE = {{Hybrid approach for solving multivariate systems over finite fields}},
+  AUTHOR = {Bettale, Luk and Faug{\`e}re, Jean-Charles and Perret, Ludovic},
+  URL = {https://hal.science/hal-01148127},
+  JOURNAL = {{Journal of Mathematical Cryptology}},
+  PUBLISHER = {{De Gruyter}},
+  VOLUME = {3},
+  NUMBER = {3},
+  PAGES = {177--197},
+  YEAR = {2010},
+  MONTH = Jan,
+  DOI = {10.1515/jmc.2009.009},
+  HAL_ID = {hal-01148127},
+  HAL_VERSION = {v1},
+}
+
+
+@phdthesis{Buchberger1965,
+    author    = {Bruno Buchberger},
+    title     = {Ein Algorithmus zum Auffinden der Basiselemente des Restklassenringes nach einem nulldimensionalen Polynomideal ({An Algorithm for Finding the Basis Elements of the Residue Class Ring of a Zero-Dimensional Polynomial Ideal})},
+    school    = {Mathematical Institute, University of Innsbruck, Austria},
+    year      = {1965},
+    note      = {Ph.D. Thesis}
+}
+
+
+
+@article{Buchberger1970,
+    author    = {Bruno Buchberger},
+    title     = {Ein algorithmisches Kriterium f{\"u}r die L{\"o}sbarkeit eines algebraischen Gleichungssystems ({An Algorithmical Criterion for the Solvability of a System of Algebraic Equations})},
+    journal   = {Aequationes Mathematicae},
+    volume    = {4},
+    number    = {3},
+    pages     = {374--383},
+    year      = {1970},
+    doi       = {10.1007/BF01844169}
+}
+
+@misc{cryptoeprint:2023-589,
+      author = {Andre Esser and Javier Verbel and Floyd Zweydinger and Emanuele Bellini},
+      title = {$CryptographicEstimators$: a Software Library for Cryptographic Hardness Estimation},
+      howpublished = {Cryptology {ePrint} Archive, Paper 2023/589},
+      year = {2023},
+      url = {https://eprint.iacr.org/2023/589}
+}
+
+@misc{beulens,
+      author = {Ward Beullens},
+      title = {Improved Cryptanalysis of {UOV} and Rainbow},
+      howpublished = {Cryptology {ePrint} Archive, Paper 2020/1343},
+      year = {2020},
+      url = {https://eprint.iacr.org/2020/1343}
+}
+
+
+@article{Pat97,
+author="Patarin, J.",
+title="The oil and vinegar signature scheme",
+journal="Presented at the Dagstuhl Workshop on Cryptography September 1997",
+year="1997",
+URL="https://cir.nii.ac.jp/crid/1570854176209056000"
+}
+
+@InProceedings{multivar-fusco,
+author="Fusco, Giordano
+and Bach, Eric",
+editor="Cai, Jin-Yi
+and Cooper, S. Barry
+and Zhu, Hong",
+title="Phase Transition of Multivariate Polynomial Systems",
+booktitle="Theory and Applications of Models of Computation",
+year="2007",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="632--645",
+abstract="A random multivariate polynomial system with more equations than variables is likely to be unsolvable. On the other hand if there are more variables than equations, the system has at least one solution with high probability. In this paper we study in detail the phase transition between these two regimes, which occurs when the number of equations equals the number of variables. In particular the limiting probability for no solution is 1/e at the phase transition, over a prime field.",
+isbn="978-3-540-72504-6"
+}
+
+@inproceedings{fast-poly-calc,
+author = {Pernet, Cl\'{e}ment and Storjohann, Arne},
+title = {Faster algorithms for the characteristic polynomial},
+year = {2007},
+isbn = {9781595937438},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1277548.1277590},
+doi = {10.1145/1277548.1277590},
+abstract = {A new randomized algorithm is presented for computing the characteristic polynomial of an n x n matrix over a field. Over a suffciently large field the asymptotic expected complexity of the algorithm is O(nθ)field operations, improving by a factor of log n on the worst case complexity of Keller-Gehrig's algorithm [11].},
+booktitle = {Proceedings of the 2007 International Symposium on Symbolic and Algebraic Computation},
+pages = {307–314},
+numpages = {8},
+keywords = {characteristic polynomial, complexity, frobenius normal form},
+location = {Waterloo, Ontario, Canada},
+series = {ISSAC '07}
+}
+
+@incollection{Gao.vonzurGathen:1994,
+  author = {Gao, Shuhong and von zur Gathen, Joachim},
+  title = {Berlekamp's and Niederreiter's polynomial factorization algorithms},
+  booktitle = {Finite Fields: Theory, Applications and Algorithms},
+  editor = {Mullen, Gary L. and Shiue, Peter Jau-Shyong},
+  volume = {168},
+  series = {Contemporary Mathematics},
+  pages = {101--115},
+  year = {1994},
+  publisher = {American Mathematical Society},
+  address = {Brookline, MA}
+}
+
+@inproceedings{Shoup1993,
+author = {Shoup, V.},
+title = {Factoring Polynomials over Finite Fields: Asymptotic Complexity vs. Reality},
+booktitle = {Proc. Int. IMACS Symp. on Symbolic Comput., New Trends and Developments},
+pages = {124--129},
+year = {1993},
+address = {Lille, France}
+}
+
+@article{F5-complexity,
+  author       = {Magali Bardet and
+                  Jean{-}Charles Faug{\`{e}}re and
+                  Bruno Salvy},
+  title        = {On the Complexity of the {F5} Gr{\"{o}}bner basis Algorithm},
+  journal      = {CoRR},
+  volume       = {abs/1312.1655},
+  year         = {2013},
+  url          = {http://arxiv.org/abs/1312.1655},
+  eprinttype    = {arXiv},
+  eprint       = {1312.1655},
+  timestamp    = {Mon, 13 Aug 2018 16:48:57 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/BardetFS13.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }

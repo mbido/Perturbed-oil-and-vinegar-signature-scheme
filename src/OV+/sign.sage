@@ -205,18 +205,24 @@ def solve_quadratic_system(M, Y0, K, F, t, V, verbose=0):
   pring = PolynomialRing(field, t, names="z")
   z = matrix(pring,t,1,pring.gens())
   polys = []
+  oil = matrix(pring,k,1,Y0) + K * z
+  vec = matrix(pring,2*k,1,vector(pring,list(oil) + list(V)))
   for i in range(t):
     Fi = F[i]
-    oil = matrix(pring,k,1,Y0) + K * z
-    vec = matrix(pring,2*k,1,vector(pring,list(oil) + list(V)))
     mi = M[i]
     polys.append((vec.transpose() * Fi * vec)[0][0] - mi)
+
   I = pring.ideal(polys)
   v = I.variety()
+
+  
+
   if len(v) == 0:
     return None
   Z0 = vector(v[0][var] for var in pring.gens())
   return vector(field, list(Y0 + K * Z0) + list(V))
+
+
 
 
 def sign(message, S, T, F, t, verbose=0):
