@@ -43,8 +43,8 @@ if True:
       "256": {"q": 65521}
   }
 
-  k_values_to_test = [2**(i) for i in range(3, 8)] 
-  num_iterations = 1 # Keeping num_iterations = 1 as per your latest log
+  k_values_to_test = [39, 53, 69] 
+  num_iterations = 100 # Keeping num_iterations = 1 as per your latest log
   test_message = "UOV Signature Scheme Test Message"
 
   results_key_gen = {}

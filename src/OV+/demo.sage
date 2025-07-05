@@ -135,13 +135,13 @@ if True:
         return avg_time, first_run_result
 
     parameters_q_new = {
-        "GF_251": {"q": 251}, 
-        "GF_4093": {"q": 4093}, 
-        "GF_65521": {"q": 65521}, 
+        "128": {"q": 251}, 
+        "192": {"q": 4093}, 
+        "256": {"q": 65521}, 
     }
-    k_values_new = [4*i for i in range(7, 12)] 
+    k_values_new = [39, 53, 69] 
     
-    num_iterations_new = 1 # As per your latest log
+    num_iterations_new = 50 # As per your latest log
     test_message_new = "Message for modified scheme"
 
     results_keygen_new = {}
