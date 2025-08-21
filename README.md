@@ -1,5 +1,6 @@
 # OV+-study
-This repository is a study of the multivariate signature schema OV and OV+&#x0302;
+This repository is a study of the multivariate signature schema OV and OV $\hat{+}$
+;
 
 
 ## Structure of the project
